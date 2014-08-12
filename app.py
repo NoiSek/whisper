@@ -1,4 +1,4 @@
-from bottle import Bottle, TEMPLATE_PATH, static_file, request, run
+from bottle import Bottle, TEMPLATE_PATH, static_file, request, template, run
 from bottle_sqlite import SQLitePlugin
 
 from whisper import _database
@@ -30,8 +30,12 @@ def index():
 # Todo: Allow the original sender to view and optionally destroy message using cookies.
 @app.route('/disposable/<message_id>')
 def view_whisper(message_id, db):
-  return message_id
-  message = app.database.get_disposable(message_id)
+  message = app.database.get_disposable(message_id, db)
+
+  if message is None:
+    return template("disposable_expired")
+
+  sender, content, password = message
   
   return template("disposable", sender=sender, content=content, password=password)
 

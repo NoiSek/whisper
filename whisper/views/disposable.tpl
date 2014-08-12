@@ -15,7 +15,7 @@
       <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/grids-responsive-min.css">
     <!--<![endif]-->
 
-    <link rel="stylesheet" href="/static/css/site.css">
+    <link rel="stylesheet" href="/static/css/disposable.css">
     
   </head>
   <body>
