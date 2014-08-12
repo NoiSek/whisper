@@ -73,9 +73,14 @@
                   <option value=""> Paranoia Level </option>
                   <option value="1">Plain Text</option>
                   <option value="2">Disposable message</option>
+                  <option value="3">SMS authentication</option>
                 </select>
                 
                 <button type="submit" class="pure-button pure-button-primary">send my whisper</button>
+                <div id="sms_container">
+                  Send a secret verification code to:
+                  <input id="sms_number" name="number" placeholder="1 888 555 1234">
+                </div>
               </form>
             </div>
             <div id="success_modal">

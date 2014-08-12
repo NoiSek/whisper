@@ -72,6 +72,11 @@ html, body {
   position: relative;  
 }
 
+#sms_container {
+  display: none;
+  margin-top: 25px;
+}
+
 #success_modal { 
   color: #222;
   text-align: center;
