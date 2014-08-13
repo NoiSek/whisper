@@ -18,10 +18,10 @@ html, body {
 /* ------------------------------------
  * Table of Contents
  * -------------------------------------
- *   :: Bullshit I need to get rid of
- *   :: Footer */
+ *   :: 1.a Bullshit I need to get rid of
+ *   :: 1.b Footer */
 /*///////////////////////////////////
- * :: Bullshit I need to get rid of */
+ * :: 1.a Bullshit I need to get rid of */
 .pure-img-responsive {
   max-width: 100%;
   height: auto; }
@@ -133,7 +133,7 @@ html, body {
   text-shadow: 0 1px 1px #333333; }
 
 /*///////////////////////////////////
- * :: Footer */
+ * :: 1.b Footer */
 .footer {
   text-align: center;
   padding: 1em 0; }
@@ -159,7 +159,8 @@ html, body {
 /* ------------------------------------
  * Table of Contents
  * -------------------------------------
- *   :: Alerts */
+ *   :: 1.a Alerts 
+ *   :: 1.b Utility Classes */
 /*///////////////////////////////////
  * :: Alerts */
 .alert, .error, .success {
@@ -182,11 +183,77 @@ html, body {
 .success {
   color: #e4ffeb;
   background: #31bf57;
-  border: 2px solid #21a745;
+  border: 1px solid #21a745;
   /*#217F3A */ }
+
+/*///////////////////////////////////
+ * :: Utility Classes */
+.absolute_center {
+  margin: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0; }
+
+body.auth_page {
+  background: #6088d7;
+  -webkit-transition: background 0.2s ease;
+  -moz-transition: background 0.2s ease;
+  transition: background 0.2s ease; }
+  body.auth_page.failure {
+    background: #d76060; }
+  body.auth_page.success_ {
+    background: #31bf57;
+    border: none; }
+
+#auth_container {
+  height: 200px;
+  width: 500px; }
+  #auth_container .divider {
+    display: inline-block;
+    color: white;
+    font-size: 32pt;
+    font-weight: 500;
+    text-align: center;
+    margin-right: 5px;
+    width: 30px; }
+  #auth_container form {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 185px; }
+  #auth_container input {
+    border: none;
+    color: #353535;
+    font-size: 24pt;
+    border-radius: 3px;
+    padding: 0 10px 0 10px;
+    width: 75px; }
+    #auth_container input:focus {
+      outline: none; }
 
 #faq {
   margin-top: 300px; }
+
+#success_icon {
+  background: url("/static/img/check.png");
+  background-size: cover;
+  display: none;
+  margin: 0 auto 0 auto;
+  height: 50px;
+  width: 50px;
+  -webkit-transition: height 1s ease;
+  -moz-transition: height 1s ease;
+  transition: height 1s ease; }
+
+#text_logo {
+  color: white;
+  font-family: sans-serif;
+  font-size: 48pt;
+  font-style: italic;
+  font-weight: bold;
+  text-align: center; }
 
 .disposed_header {
   color: #222222;

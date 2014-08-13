@@ -16,10 +16,21 @@
     <!--<![endif]-->
 
     <link rel="stylesheet" href="/static/css/disposable.css">
+    <link rel="stylesheet" href="/static/css/animate.css">
     
   </head>
   <body class="auth_page">
     <div id="layout" class="pure-g">
+      <div id="auth_container" class="absolute_center">
+        <div id="text_logo">Whisper</div>
+        <div id="success_icon"></div>
+        <form id="auth_form" method="post">
+          <input id="password_one" name="password_one" minlength="3" maxlength="3">
+          <div class="divider"> - </div>
+          <input id="password_two" name="password_two" minlength="3" maxlength="3">
+          <input type="hidden" name="message_id" value="{{message_id}}">
+        </form>
+      </div>
     </div>
     <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script src="/static/js/disposable_auth.js"></script>

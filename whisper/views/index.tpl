@@ -15,7 +15,7 @@
       <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/grids-responsive-min.css">
     <!--<![endif]-->
 
-    <link rel="stylesheet" href="static/css/site.css">
+    <link rel="stylesheet" href="static/css/index.css">
     <link rel="stylesheet" href="static/css/animate.css">
     
   </head>
@@ -83,7 +83,7 @@
                 </div>
               </form>
             </div>
-            <div id="success_modal">
+            <div id="success_modal" class="absolute_center">
               <div id="success_modal_head">&nbsp;</div>
               <div id="success_modal_body">
                 <div class="title">Success!</div>
@@ -107,6 +107,6 @@
       </div>
     </div>
     <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script src="static/js/site.js"></script>
+    <script src="static/js/index.js"></script>
   </body>
 </html>

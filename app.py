@@ -29,15 +29,44 @@ def index():
 
 # Todo: Allow the original sender to view and optionally destroy message using cookies.
 @app.route('/disposable/<message_id>')
-def view_whisper(message_id, db):
+@app.route('/disposable/<message_id>/<auth>')
+def view_whisper(message_id, db, auth=None):
   message = app.database.get_disposable(message_id, db)
 
   if message is None:
     return template("disposable_expired")
 
   sender, content, password = message
+
+  if password:
+    if auth is not None and auth == password:
+      return template("disposable", sender=sender, content=content, password=auth)  
+
+    return template("disposable_auth", sender=sender, message_id=message_id)
   
-  return template("disposable", sender=sender, content=content, password=password)
+  return template("disposable", sender=sender, content=content, password=auth)
+
+@app.post('/disposable/verify')
+def verify_whisper(db):
+  query = request.forms.get('password')
+  message_id = request.forms.get('message_id')
+
+  message = app.database.get_disposable(message_id, db)
+
+  if message is None:
+    return json.JSONEncoder().encode({
+      "success": "false"
+    })
+
+  sender, content, password = message
+  
+  result = "true" if password == query else "false"
+
+  return json.JSONEncoder().encode({
+    "success": result,
+    "result": password,
+    "sent": query
+  })
 
 @app.post('/send')
 def send_whisper(db):
