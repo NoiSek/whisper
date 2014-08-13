@@ -11,13 +11,13 @@ Todo:
 ###Installing Whisper
 Whisper is a Python3 application.
 
-#Requirements
+####Requirements
  - Python 3.4+
  - Gunicorn
  - Bottle (Included)
  - Requests (pip install requests)
 
-#Example Nginx config
+####Example Nginx config
     server {
       listen 80;
       server_name www.whisper.email;
