@@ -41,11 +41,13 @@ def view_whisper(message_id, db, auth=None):
   if password:
     if auth is not None and auth == password:
       app.database.delete_disposable(message_id, db)
+      app.database.update_stats("opened", db)
       return template("disposable", sender=sender, content=content)  
 
     return template("disposable_auth", sender=sender, message_id=message_id)
   
   app.database.delete_disposable(message_id, db)
+  app.database.update_stats("opened", db)
   return template("disposable", sender=sender, content=content)
 
 @app.post('/disposable/verify')
@@ -70,6 +72,13 @@ def verify_whisper(db):
 
 @app.post('/send')
 def send_whisper(db):
+
+  # Make endpoint always return successful for testing
+  return json.JSONEncoder().encode({
+    "success": "true",
+    "response": "Message sent successfully."
+  })
+
   address = request.forms.get('address')
   sender = request.forms.get('sender')
   content = request.forms.get('content')
@@ -81,6 +90,8 @@ def send_whisper(db):
     password = password or app.utils.gen_password()
     message_id = app.database.create_disposable(sender, content, password, db)    
     url = "http://%s/disposable/%s" % (app.app_config.get("domain"), message_id)
+
+    app.database.update_stats("sent", paranoia, db)
 
     # Paranoia == Disposable Message
     if int(paranoia) == 2:
@@ -115,5 +126,11 @@ def send_whisper(db):
 def serve_static(filename):
     return static_file(filename, root='./whisper/static/')
 
-app.run(host="localhost", port=8080, workers=4, debug=True, reloader=True)
-#app.run(port=8080, workers=4, server='gunicorn')
+@app.route('/test')
+def test():
+  sender = "Test"
+  message_id = "test"
+  return template("disposable_auth", sender=sender, message_id=message_id)
+
+#app.run(host="localhost", port=8080, debug=True, reloader=True)
+app.run(port=8080, workers=4, server='gunicorn')

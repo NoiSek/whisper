@@ -19,6 +19,17 @@ def init_db():
     )
 
     c.execute("CREATE TABLE IF NOT EXISTS stats("
+      "id PRIMARY KEY,"
+      "sent INT,"
+      "sent_plaintext INT,"
+      "sent_disposable INT,"
+      "sent_twofactorauth INT,"
+      "messages_opened INT)"
+    )
+
+    c.execute("CREATE TABLE IF NOT EXISTS stats_historical("
+      "id INT PRIMARY KEY AUTOINCREMENT,"
+      "date DATE,"
       "sent INT,"
       "sent_plaintext INT,"
       "sent_disposable INT,"
