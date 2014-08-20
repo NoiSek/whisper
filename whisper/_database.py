@@ -1,8 +1,6 @@
-from whisper import _utils
 import sqlite3
 
-def create_disposable(sender, content, password, db):
-  unique_id = _utils.gen_id()
+def create_disposable(unique_id, sender, content, password, db):
   c = db.cursor()
   c.execute("INSERT INTO messages "
     "VALUES (?, ?, ?, ?)",
@@ -10,8 +8,6 @@ def create_disposable(sender, content, password, db):
   )
 
   db.commit()
-
-  return unique_id
 
 def get_disposable(message_id, db):
   c = db.cursor()
@@ -32,13 +28,19 @@ def delete_disposable(message_id, db):
   
   db.commit()
 
+def get_stats(db):
+  c = db.cursor()
+  c = db.execute("SELECT sent, messages_opened FROM stats WHERE id = 1")
+  
+  return c.fetchone()
+
 def update_stats(*args):
-  event, db, *args = args
+  event, *args, db = args
 
   c = db.cursor()
 
-  c.execute("INSERT OR IGNORE INTO stats"
-    "VALUES (1, 0, 0, 0, 0, 0)"
+  c.execute("INSERT OR IGNORE INTO stats "
+    "VALUES (1, 0, 0, 0, 0 ,0)"
   )
 
   c.execute("INSERT OR IGNORE INTO stats_historical "
@@ -46,7 +48,7 @@ def update_stats(*args):
   )
 
   if event is "sent":
-    paranoia = args[0]
+    paranoia = int(args[0])
 
     increment = {
       "sent": 1,
@@ -56,13 +58,13 @@ def update_stats(*args):
     }
 
     c.execute("UPDATE stats "
-      "SET sent = sent + ?, sent_plaintext = sent_paintext + ?, sent_disposable = sent_disposable + ?, sent_twofactorauth = sent_twofactorauth + ?"
+      "SET sent = sent + ?, sent_plaintext = sent_plaintext + ?, sent_disposable = sent_disposable + ?, sent_twofactorauth = sent_twofactorauth + ? "
       "WHERE id = 1 ",
       (increment['sent'], increment['plaintext'], increment['disposable'], increment['twofactorauth'])
     )
 
     c.execute("UPDATE stats_historical "
-      "SET sent = sent + ?, sent_plaintext = sent_paintext + ?, sent_disposable = sent_disposable + ?, sent_twofactorauth = sent_twofactorauth + ?"
+      "SET sent = sent + ?, sent_plaintext = sent_plaintext + ?, sent_disposable = sent_disposable + ?, sent_twofactorauth = sent_twofactorauth + ? "
       "WHERE date = date('now')",
       (increment['sent'], increment['plaintext'], increment['disposable'], increment['twofactorauth'])
     )

@@ -12,14 +12,14 @@ def init_db():
     c = db.cursor()
 
     c.execute("CREATE TABLE IF NOT EXISTS messages("
-      "id PRIMARY KEY,"
+      "id INT PRIMARY KEY,"
       "sender TEXT,"
       "content TEXT,"
       "password TEXT)"
     )
 
     c.execute("CREATE TABLE IF NOT EXISTS stats("
-      "id PRIMARY KEY,"
+      "id INT PRIMARY KEY,"
       "sent INT,"
       "sent_plaintext INT,"
       "sent_disposable INT,"
@@ -28,8 +28,7 @@ def init_db():
     )
 
     c.execute("CREATE TABLE IF NOT EXISTS stats_historical("
-      "id INT PRIMARY KEY AUTOINCREMENT,"
-      "date DATE,"
+      "date DATE PRIMARY KEY,"
       "sent INT,"
       "sent_plaintext INT,"
       "sent_disposable INT,"
