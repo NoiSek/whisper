@@ -5,7 +5,7 @@ from whisper import _database
 from whisper import _utils
 from whisper import _init
 
-import json
+import json, sys
 
 # Extend the bottle class to initialize the DB and config
 class WhisperApp(Bottle):
@@ -143,8 +143,26 @@ def send_whisper(db):
 def serve_static(filename):
     return static_file(filename, root='./whisper/static/')
 
-# Run app locally for testing
-#app.run(host="localhost", port=8080, debug=True, reloader=True)
+@app.route('/test')
+def test():
+  sender = "Gary Provost"
+  address = "cptn.lightning@gmail.com"
+  content = """“This sentence has five words. Here are five more words. Five-word sentences are fine. But several together become monotonous. Listen to what is happening. The writing is getting boring. The sound of it drones. It’s like a stuck record. The ear demands some variety. 
 
-# Run app in production
-app.run(port=8080, workers=4, server='gunicorn')
+Now listen. 
+I vary the sentence length, and I create music. Music. The writing sings.
+It has a pleasant rhythm, a lilt, a harmony. 
+I use short sentences. 
+And I use sentences of medium length. 
+And sometimes, when I am certain the reader is rested, I will engage him with a sentence of considerable length, a sentence that burns with energy and builds with all the impetus of a crescendo, the roll of the drums, the crash of the cymbals–sounds that say listen to this, it is important.” """.encode('ascii', 'xmlcharrefreplace')
+
+  return template("email", sender=sender, content=content, url=None, domain=app.app_config.get("domain"))
+  #response = app.utils.send_email(address=address, sender=sender, content=html, config=app.app_config)
+
+if "debug" in sys.argv:
+  # Run app locally for testing
+  app.run(host="localhost", port=8080, debug=True, reloader=True)
+
+else:
+  # Run app in production
+  app.run(port=8080, workers=4, server='gunicorn')

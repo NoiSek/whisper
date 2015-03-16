@@ -45,16 +45,18 @@ def init_db():
 def init_config():
 
   if not os.path.exists('./config'):
-    open('./config', 'w').write(inspect.cleandoc(
-      r'''
-      {
-        "api_key": "",
-        "domain": "yourdomain.com",
-        "salt": "%s"
-      }''' % _utils.gen_id(10)) + '\n')
+    with open("./config", "w") as f:
+      f.write(inspect.cleandoc(
+        r'''
+        {
+          "api_key": "",
+          "domain": "yourdomain.com",
+          "salt": "%s"
+        }''' % _utils.gen_id(10)) + '\n')
 
   try:
-    data = json.load(open("./config", "r"))
+    with open("./config", "r") as f:
+      data = json.load(f)
 
   except Exception as e:
     raise Exception("Failed to load config! ", e)
