@@ -17,9 +17,10 @@ Todo:
 Whisper is a Python 3 application.
 
 To begin the installation process, install the Python Development Headers and Python 3. On Ubuntu this would be:
+
 ```
   sudo apt-get install python3.4 python3.4-dev openssl
-``
+```
 
 To install all the necessary Python requirements, navigate to the root directory and use:
 
