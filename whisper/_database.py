@@ -30,7 +30,7 @@ def delete_disposable(message_id, db):
 
 def get_stats(db):
   c = db.cursor()
-  c = db.execute("SELECT sent, messages_opened FROM stats WHERE id = 1")
+  c = db.execute("SELECT * FROM stats WHERE id = 1")
   
   return c.fetchone()
 

@@ -70,7 +70,7 @@ To install all the necessary Python requirements, navigate to the root directory
 ```
 
 ###Setting up Whisper
-Make sure the user you're running Whisper as has write permissions to the current directory, then run 'gunicorn app' from your root Whisper directory to start.
+Make sure the user you're running Whisper as has write permissions to the current directory, then run ```gunicorn app'``` from your root Whisper directory to start.
 
 Whisper config will be automatically generated in your root folder if it isn't already present, the config follows this structure:
 

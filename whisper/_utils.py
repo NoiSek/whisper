@@ -17,8 +17,11 @@ def gen_password():
   
 def format_number(number):
   # Strip unnecessary characters, leaving just the digits.
-  stripped = string.punctuation + " "
-  number.translate(number.maketrans(dict(zip(stripped, ["" for x in stripped]))))
+  stripped = string.punctuation
+  number = number.translate(number.maketrans(dict(zip(stripped, ["" for x in stripped]))))
+
+  # Remove whitespace chars
+  number = number.replace(" ", "")
 
   # Check if the number contains a country code, else assume US or fail if less than 10 digits.
   if number.isdigit():
