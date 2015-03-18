@@ -83,10 +83,8 @@ class InitTestCase(unittest.TestCase):
       except Exception:
         self.assertEqual(e.msg, "API Key not specified in config. Sign up at http://mailgun.com")
 
-    with open("./config", "r") as f:
+    with open("./config", "r+") as f:
       self.data = json.load(f)
-
-    with open("./config", "w") as f:
       self.data['api_key'] = "testapikey"
       json.dump(self.data, f, indent=2)
 
@@ -125,7 +123,7 @@ class UtilsTestCase(unittest.TestCase):
 
   def test_format_number(self):
     formatted_number = _utils.format_number("1 (888) 555-5555")
-    self.assertEqual(formatted_number, ('18885555555', 'united states'))
+    self.assertEqual(formatted_number, ('8885555555', 'united states'))
 
   @unittest.skip("This cannot be safely tested without spamming.")
   def test_send_sms(self):

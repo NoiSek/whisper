@@ -2,6 +2,7 @@ from bottle import Bottle, TEMPLATE_PATH, static_file, request, template, run
 from bottle_sqlite import SQLitePlugin
 
 from whisper import _database
+from whisper import _crypto
 from whisper import _utils
 from whisper import _init
 

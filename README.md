@@ -12,6 +12,7 @@ Todo:
  - Add optional time expiration
  - Implement docker for painless installation
  - Expand test coverage, break unit testing into more modular pieces
+ - Queueing system when encrypting messages rather than competing for available memory
 
 ###Installing Whisper
 Whisper is a Python 3 application.
@@ -19,7 +20,7 @@ Whisper is a Python 3 application.
 To begin the installation process, install the Python Development Headers and Python 3. On Ubuntu this would be:
 
 ```
-  sudo apt-get install python3.4 python3.4-dev openssl
+  sudo apt-get install python3.4
 ```
 
 To install all the necessary Python requirements, navigate to the root directory and use:
@@ -32,15 +33,13 @@ To install all the necessary Python requirements, navigate to the root directory
 
 #####System Dependencies
  - Python 3.4+
- - Python3.4+ Development Headers
- - OpenSSL
 
 #####Python Dependencies
  - Gunicorn
  - Bottle
  - Bottle-sqlite
  - Requests
- - pyOpenSSL
+ - pyNaCL
 
 ####Example Nginx config
 

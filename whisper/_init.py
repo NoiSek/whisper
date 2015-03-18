@@ -1,5 +1,8 @@
 from whisper import _utils
 
+import nacl.encoding
+import nacl.public
+import nacl.utils
 import inspect
 import sqlite3
 import json
@@ -51,7 +54,8 @@ def init_config():
         {
           "api_key": "",
           "domain": "yourdomain.com",
-          "salt": "%s"
+          "salt": "%s",
+          "private_key": ""
         }''' % _utils.gen_id(10)) + '\n')
 
   try:
@@ -69,6 +73,27 @@ def init_config():
 
   if data.get("salt") == "":
     data['salt'] = _utils.gen_id(10)
+
+    with open("./config", "w") as f:
+      json.dump(data, f, indent=2)
+
+  if data.get("private_key") == "":
+    data['private_key'] = (
+      nacl.public.PrivateKey.generate()
+      .encode(encoder=nacl.encoding.URLSafeBase64Encoder)
+      .decode("utf-8")
+    )
+
+    with open("./config", "w") as f:
+      json.dump(data, f, indent=2)
+
+  if data.get("public_key") is None:
+    data['public_key'] = (
+      nacl.public.PrivateKey(data['private_key'], encoder=nacl.encoding.URLSafeBase64Encoder)
+      .public_key
+      .encode(encoder=nacl.encoding.URLSafeBase64Encoder)
+      .decode("utf-8")
+    )
 
     with open("./config", "w") as f:
       json.dump(data, f, indent=2)
