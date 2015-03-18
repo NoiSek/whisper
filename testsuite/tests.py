@@ -104,14 +104,14 @@ class InitTestCase(unittest.TestCase):
 
 class UtilsTestCase(unittest.TestCase):
   def test_gen_id(self):
-    ID = _utils.genID()
+    ID = _utils.gen_id()
 
     # Returns a 10 character string
     self.assertTrue(len(ID) is 10)
     self.assertIsInstance(ID, str)
 
     # No duplicates
-    ID_list = [_utils.genID() for x in range(10)]
+    ID_list = [_utils.gen_id() for x in range(10)]
     self.assertTrue(len(set(ID_list)) is 10)
 
   def test_gen_password(self):
