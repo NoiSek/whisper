@@ -144,21 +144,24 @@ def send_whisper(db):
 def serve_static(filename):
     return static_file(filename, root='./whisper/static/')
 
-@app.route('/test')
-def test():
+@app.route('/test/<email_address>')
+def send_test(email_address):
   sender = "Gary Provost"
-  address = "cptn.lightning@gmail.com"
-  content = """“This sentence has five words. Here are five more words. Five-word sentences are fine. But several together become monotonous. Listen to what is happening. The writing is getting boring. The sound of it drones. It’s like a stuck record. The ear demands some variety. 
+  address = email_address
+  content = (
+    "“This sentence has five words. Here are five more words. Five-word sentences are fine. But several together become monotonous. Listen to what is happening. The writing is getting boring. The sound of it drones. It’s like a stuck record. The ear demands some variety.\n\n"
+    "Now listen.\n"
+    "I vary the sentence length, and I create music. Music. The writing sings.\n"
+    "It has a pleasant rhythm, a lilt, a harmony.\n"
+    "I use short sentences.\n"
+    "And I use sentences of medium length.\n"
+    "And sometimes, when I am certain the reader is rested, I will engage him with a sentence of considerable length, a sentence that burns with energy and builds with all the impetus of a crescendo, the roll of the drums, the crash of the cymbals–sounds that say listen to this, it is important.” "
+  ).encode('ascii', 'xmlcharrefreplace')
 
-Now listen. 
-I vary the sentence length, and I create music. Music. The writing sings.
-It has a pleasant rhythm, a lilt, a harmony. 
-I use short sentences. 
-And I use sentences of medium length. 
-And sometimes, when I am certain the reader is rested, I will engage him with a sentence of considerable length, a sentence that burns with energy and builds with all the impetus of a crescendo, the roll of the drums, the crash of the cymbals–sounds that say listen to this, it is important.” """.encode('ascii', 'xmlcharrefreplace')
-
-  return template("email", sender=sender, content=content, url=None, domain=app.app_config.get("domain"))
+  html = template("email", sender=sender, content=content, url=None, domain=app.app_config.get("domain"))
   #response = app.utils.send_email(address=address, sender=sender, content=html, config=app.app_config)
+
+  return html
 
 if "debug" in sys.argv:
   # Run app locally for testing

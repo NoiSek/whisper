@@ -88,7 +88,7 @@ class InitTestCase(unittest.TestCase):
     with self.assertRaises(Exception) as e:
       _init.init_config()
 
-    self.assertTrue("API Key not specified in config. Sign up at http://mailgun.com" in e.exception)
+    self.assertTrue("API Key not specified in config. Sign up at http://mailgun.com" in str(e))
 
     with open("./config", "r+") as f:
       self.data = json.load(f)
@@ -98,7 +98,7 @@ class InitTestCase(unittest.TestCase):
     with self.assertRaises(Exception) as e:
       _init.init_config()
 
-    self.assertTrue("Domain not specified in config." in e.exception)
+    self.assertTrue("Domain not specified in config." in str(e))
 
     with open("./config", "w") as f:
       self.data['domain'] = "testunittests.com"
@@ -139,7 +139,7 @@ class UtilsTestCase(unittest.TestCase):
     with self.assertRaises(Exception) as e:
       formatted_number = _utils.format_number("fake number")
 
-    self.assertTrue("Not a valid phone number." in e.exception)
+    self.assertTrue("Not a valid phone number." in str(e))
 
   @unittest.skip("This cannot be safely tested without spamming.")
   def test_send_sms(self):
@@ -158,7 +158,7 @@ class CryptoTestCase(unittest.TestCase):
     with self.assertRaises(Exception) as e:
       fail_key = _crypto.WhisperKey("Bad String")
 
-    self.assertTrue("Error generating key from given str or bytes object:" in e.exception)
+    self.assertTrue("Error generating key from given str or bytes object:" in str(e))
 
     strkey = "zWoSH8+RYeqJt+UaJI9E9mbmcUQWDh9gjBYfWb5ziLk="
     self.assertIsInstance(WhisperKey(strkey).get_private_key(), nacl.public.PrivateKey)
