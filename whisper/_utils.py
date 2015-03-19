@@ -74,8 +74,8 @@ def send_email(address, sender, content, config): # pragma: no cover
       "success": "true"
     })
 
-  else: # pragma: no cover
+  else:
     return json.JSONEncoder().encode({
-      "success": "false",
-      "response": r['message']
+      "success": "false", # pragma: no cover
+      "response": json_data['message'] # pragma: no cover
     })

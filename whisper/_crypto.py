@@ -63,13 +63,13 @@ class WhisperKey():
       raise Exception("Invalid public key provided.")
 
     # Make sure our message is a bytes object, or convert it to one.
-    if isinstance(message, bytes):
+    if isinstance(message, bytes): # pragma: no cover
       pass
 
     elif isinstance(message, str):
       message = bytes(message, "utf-8")
 
-    else:
+    else: # pragma: no cover
       raise Exception("Message is not bytes or str.")
 
     box = nacl.public.Box(self._private_key, public_key)
@@ -94,13 +94,13 @@ class WhisperKey():
       raise Exception("Invalid public key provided.")
 
     # Make sure our message is a bytes object, or convert it to one.
-    if isinstance(message, bytes):
+    if isinstance(message, bytes): # pragma: no cover
       pass
 
     elif isinstance(message, str):
       message = bytes(message, "utf-8")
 
-    else:
+    else: # pragma: no cover
       raise Exception("Message is not bytes or str.")
 
     box = nacl.public.Box(self._private_key, public_key)
