@@ -53,10 +53,10 @@ class WhisperKey():
     if isinstance(public_key, nacl.public.PublicKey):
       pass
 
-    elif isinstance(public_key, str) or isinstance(public_key, bytes):
+    elif isinstance(public_key, str) or isinstance(public_key, bytes): # pragma: no cover
       public_key = nacl.public.PublicKey(public_key, encoder=nacl.encoding.Base64Encoder)
 
-    elif isinstance(public_key, WhisperKey):
+    elif isinstance(public_key, WhisperKey): # pragma: no cover
       public_key = public_key.get_public_key()
 
     else:
@@ -84,10 +84,10 @@ class WhisperKey():
     if isinstance(public_key, nacl.public.PublicKey):
       pass
 
-    elif isinstance(public_key, str) or isinstance(public_key, bytes):
+    elif isinstance(public_key, str) or isinstance(public_key, bytes): # pragma: no cover
       public_key = nacl.public.PublicKey(public_key, encoder=nacl.encoding.Base64Encoder)
 
-    elif isinstance(public_key, self.WhisperKey):
+    elif isinstance(public_key, WhisperKey): # pragma: no cover
       public_key = public_key.get_public_key()
 
     else:
@@ -157,9 +157,4 @@ if __name__ == "__main__": # pragma: no cover
 
   print("Decrypted")
   print("================================================")
-  print(
-    receiver.decrypt_message(
-      message=out_message,
-      public_key=sender.get_public_key()
-    )
-  )
+  print(receiver.decrypt_message(message=out_message, public_key=sender.get_public_key()))

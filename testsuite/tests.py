@@ -165,11 +165,25 @@ class CryptoTestCase(unittest.TestCase):
 
     self.assertTrue("Error generating key from given str or bytes object:" in str(e.exception))
 
+    with self.assertRaises(Exception) as e:
+      fail_key = _crypto.WhisperKey(123)
+
+    self.assertTrue("Not a valid key." in str(e.exception))
+
     strkey = "zWoSH8+RYeqJt+UaJI9E9mbmcUQWDh9gjBYfWb5ziLk="
     self.assertIsInstance(_crypto.WhisperKey(strkey).get_private_key(), nacl.public.PrivateKey)
 
     key = _crypto.WhisperKey()
     otherkey = _crypto.WhisperKey()
+
+    self.assertIsInstance(key.get_private_key(), nacl.public.PrivateKey)
+    self.assertIsInstance(key.get_private_key(stringify=True), str)
+
+    self.assertIsInstance(key.get_public_key(), nacl.public.PublicKey)
+    self.assertIsInstance(key.get_public_key(stringify=True), str)
+
+    # Use own private key to create a new WhisperKey obj
+    key = _crypto.WhisperKey(key.get_private_key())
 
     self.assertIsInstance(key.get_private_key(), nacl.public.PrivateKey)
     self.assertIsInstance(key.get_private_key(stringify=True), str)
@@ -184,6 +198,15 @@ class CryptoTestCase(unittest.TestCase):
     # Pre-generated keys for testing
     key = _crypto.WhisperKey("+Ras/eyqk/ASwkODnP6+fWDYSjLoPfGuouhpGV1QyJk=")
     otherkey_public = nacl.public.PublicKey("37hyRakD53ANLSUBvvYyf/iEuff7MmTn3ys/I1YBNg8=", encoder=nacl.encoding.Base64Encoder)
+
+    # Test failure
+    with self.assertRaises(Exception) as e:
+      fail_encrypted_message = key.encrypt_message(
+        message="Failure", 
+        public_key=123
+      )
+
+    self.assertTrue("Invalid public key provided." in str(e.exception))
 
     # God save us all.
     nonce = bytes([x for x in range(24)])
@@ -205,6 +228,15 @@ class CryptoTestCase(unittest.TestCase):
     # Pre-generated keys for testing
     key = _crypto.WhisperKey("zWoSH8+RYeqJt+UaJI9E9mbmcUQWDh9gjBYfWb5ziLk=")
     otherkey_public = nacl.public.PublicKey("e6fmjnPg7xQVdddTt3JDWafhkZq2W2TsMxs7icKWbUs=", encoder=nacl.encoding.Base64Encoder)
+
+    # Test failure
+    with self.assertRaises(Exception) as e:
+      fail_decrypted_message = key.decrypt_message(
+        message="Failure",
+        public_key=123
+      )
+
+    self.assertTrue("Invalid public key provided." in str(e.exception))
 
     # Decrypt our payload
     encrypted_message = "rZ7XgI1Kt3Eb5eMz6O2YT5qY53qdcDtxr+GbH9eirCKN2Vg782gABl6yACLQiZkbX/dEqNLbM+MhqrhWFzcXgvk1JxLvnxA6yw0a/KE4OxdtZJnGu9nzgntoMhy+9Azv611UjpH6VQI="

@@ -1,8 +1,5 @@
-from whisper import _utils
+from whisper import _utils, _crypto
 
-#import nacl.encoding
-#import nacl.public
-#import nacl.utils
 import inspect
 import sqlite3
 import json
@@ -62,7 +59,7 @@ def init_config():
     with open("./config", "r") as f:
       data = json.load(f)
 
-  except Exception as e:
+  except Exception as e: # pragma: no cover
     raise Exception("Failed to load config! ", e)
 
   if data.get("api_key") == "":
@@ -77,25 +74,18 @@ def init_config():
     with open("./config", "w") as f:
       json.dump(data, f, indent=2)
 
-  x = """if data.get("private_key") == "":
-    data['private_key'] = (
-      nacl.public.PrivateKey.generate()
-      .encode(encoder=nacl.encoding.URLSafeBase64Encoder)
-      .decode("utf-8")
-    )
+  if data.get("private_key") == "":
+    key = _crypto.WhisperKey()
+    data['private_key'] = key.get_private_key(stringify=True)
 
     with open("./config", "w") as f:
       json.dump(data, f, indent=2)
 
   if data.get("public_key") is None:
-    data['public_key'] = (
-      nacl.public.PrivateKey(data['private_key'], encoder=nacl.encoding.URLSafeBase64Encoder)
-      .public_key
-      .encode(encoder=nacl.encoding.URLSafeBase64Encoder)
-      .decode("utf-8")
-    )
+    key = _crypto.WhisperKey(data.get("private_key"))
+    data['public_key'] = key.get_public_key(stringify=True)
 
     with open("./config", "w") as f:
-      json.dump(data, f, indent=2)"""
+      json.dump(data, f, indent=2)
   
   return data
