@@ -69,7 +69,7 @@ def init_config():
     raise Exception("API Key not specified in config. Sign up at http://mailgun.com")
 
   if data.get("domain") == "yourdomain.com":
-    raise Exception("Domain not specified in config.") # pragma: no cover
+    raise Exception("Domain not specified in config.")
 
   if data.get("salt") == "": # pragma: no cover
     data['salt'] = _utils.gen_id(10)

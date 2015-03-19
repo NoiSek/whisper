@@ -68,14 +68,15 @@ class DatabaseTestCase(unittest.TestCase):
     self.assertEqual(stats, (1, 0, 0, 0, 0, 0))
 
   def test_update_stats(self):
+    _database.update_stats("sent", 1, self.db)
+    _database.update_stats("opened", self.db)
+
     c = self.db.cursor()
     c.execute("SELECT * FROM stats WHERE id = 1")
     
     stats = c.fetchone()
 
-    _database.update_stats("sent", 1, self.db)
-    _database.update_stats("opened", self.db)
-    self.assertEqual(stats, (2, 0, 0, 0, 0, 1))
+    self.assertEqual(stats, (2, 1, 0, 0, 0, 1))
 
 class InitTestCase(unittest.TestCase):  
   def test_init_db(self):
@@ -161,7 +162,7 @@ class CryptoTestCase(unittest.TestCase):
     self.assertTrue("Error generating key from given str or bytes object:" in str(e.exception))
 
     strkey = "zWoSH8+RYeqJt+UaJI9E9mbmcUQWDh9gjBYfWb5ziLk="
-    self.assertIsInstance(WhisperKey(strkey).get_private_key(), nacl.public.PrivateKey)
+    self.assertIsInstance(_crypto.WhisperKey(strkey).get_private_key(), nacl.public.PrivateKey)
 
     self.key = _crypto.WhisperKey()
     self.otherkey = _crypto.WhisperKey()
