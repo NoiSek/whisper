@@ -6,7 +6,6 @@ Whisper
 Anonymous, encrypted email.
 
 Todo:
- - Implement private key encryption
  - Rewrite example Nginx config in https for various webservers
  - Add ability for original authors to view and optionally delete messages using cookies or sessions.
  - Add optional time expiration
@@ -15,12 +14,12 @@ Todo:
  - Queueing system when encrypting messages rather than competing for available memory
 
 ###Installing Whisper
-Whisper is a Python 3 application.
+Whisper is a Python 3 application. In development environments, skip all of the below and use [Vagrant](http://www.vagrantup.com/downloads) and run ```vagrant up``` instead.
 
-To begin the installation process, install the Python Development Headers and Python 3. On Ubuntu this would be:
+To begin the installation process, install Python 3 and the Python development headers. On Ubuntu:
 
 ```
-  sudo apt-get install python3.4
+  sudo apt-get install python3.4 python3.4-dev libffi-dev
 ```
 
 To install all the necessary Python requirements, navigate to the root directory and use:
@@ -33,6 +32,7 @@ To install all the necessary Python requirements, navigate to the root directory
 
 #####System Dependencies
  - Python 3.4+
+ - libffi-dev
 
 #####Python Dependencies
  - Gunicorn
@@ -71,13 +71,14 @@ To install all the necessary Python requirements, navigate to the root directory
 ###Setting up Whisper
 Make sure the user you're running Whisper as has write permissions to the current directory, then run ```gunicorn app'``` from your root Whisper directory to start.
 
-Whisper config will be automatically generated in your root folder if it isn't already present, the config follows this structure:
+Whisper config will be automatically generated in your root folder if it isn't already present. The config follows this structure:
 
 ```
   {
     "api_key": "",
     "domain": "yourdomain.com",
-    "salt": ""
+    "salt": "",
+    "private_key": "" # base64 encoded NaCl key
   }
 ```
 

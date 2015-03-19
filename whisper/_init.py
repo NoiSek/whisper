@@ -1,8 +1,8 @@
 from whisper import _utils
 
-import nacl.encoding
-import nacl.public
-import nacl.utils
+#import nacl.encoding
+#import nacl.public
+#import nacl.utils
 import inspect
 import sqlite3
 import json
@@ -77,7 +77,7 @@ def init_config():
     with open("./config", "w") as f:
       json.dump(data, f, indent=2)
 
-  if data.get("private_key") == "":
+  x = """if data.get("private_key") == "":
     data['private_key'] = (
       nacl.public.PrivateKey.generate()
       .encode(encoder=nacl.encoding.URLSafeBase64Encoder)
@@ -96,6 +96,6 @@ def init_config():
     )
 
     with open("./config", "w") as f:
-      json.dump(data, f, indent=2)
+      json.dump(data, f, indent=2)"""
   
   return data

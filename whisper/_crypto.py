@@ -48,7 +48,7 @@ class WhisperKey():
     else:
       return public_key
 
-  def encrypt_message(self, message, public_key):
+  def encrypt_message(self, message, public_key, nonce=None):
     # Verify that we can convert the public_key to an nacl.public.PublicKey instance
     if isinstance(public_key, nacl.public.PublicKey):
       pass
@@ -73,7 +73,7 @@ class WhisperKey():
       raise Exception("Message is not bytes or str.")
 
     box = nacl.public.Box(self._private_key, public_key)
-    nonce = nacl.utils.random(24)
+    nonce = nonce or nacl.utils.random(24)
     
     # Message will be prepended with a 32 character nonce, which can be parsed out elsewhere.
     encrypted_message = box.encrypt(message, nonce, encoder=nacl.encoding.Base64Encoder)
@@ -117,10 +117,25 @@ if __name__ == "__main__": # pragma: no cover
   sender = WhisperKey()
   receiver = WhisperKey()
 
+  nonce = bytes([x for x in range(24)])
+
   out_message = sender.encrypt_message(
     message="This is our test message, we'll see how it turns out in the end.",
-    public_key=receiver
+    public_key=receiver,
+    nonce=nonce
   )
+
+  print("Our private key")
+  print("================================================")
+  print(sender.get_private_key(stringify=True))
+
+  print("\n")
+
+  print("Their public key")
+  print("================================================")
+  print(receiver.get_public_key(stringify=True))
+
+  print("\n")
 
   print("Their private key")
   print("================================================")

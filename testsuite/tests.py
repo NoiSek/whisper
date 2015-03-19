@@ -76,7 +76,7 @@ class DatabaseTestCase(unittest.TestCase):
     
     stats = c.fetchone()
 
-    self.assertEqual(stats, (2, 1, 0, 0, 0, 1))
+    self.assertEqual(stats, (1, 1, 1, 0, 0, 1))
 
 class InitTestCase(unittest.TestCase):  
   def test_init_db(self):
@@ -91,15 +91,17 @@ class InitTestCase(unittest.TestCase):
 
     self.assertTrue("API Key not specified in config. Sign up at http://mailgun.com" in str(e.exception))
 
-    with open("./config", "r+") as f:
+    with open("./config", "r") as f:
       self.data = json.load(f)
       self.data['api_key'] = "testapikey"
+      
+    with open("./config", "w") as f:
       json.dump(self.data, f, indent=2)
 
-    with self.assertRaises(Exception) as e:
+    with self.assertRaises(Exception) as ex:
       _init.init_config()
 
-    self.assertTrue("Domain not specified in config." in str(e.exception))
+    self.assertTrue("Domain not specified in config." in str(ex.exception))
 
     with open("./config", "w") as f:
       self.data['domain'] = "testunittests.com"
@@ -154,7 +156,9 @@ class UtilsTestCase(unittest.TestCase):
 
 class CryptoTestCase(unittest.TestCase):
   def test_create_key(self):
+    # In the future consider setting as self.nacl within setUp()
     import nacl.public
+    import nacl.encoding
 
     with self.assertRaises(Exception) as e:
       fail_key = _crypto.WhisperKey("Bad String")
@@ -164,19 +168,49 @@ class CryptoTestCase(unittest.TestCase):
     strkey = "zWoSH8+RYeqJt+UaJI9E9mbmcUQWDh9gjBYfWb5ziLk="
     self.assertIsInstance(_crypto.WhisperKey(strkey).get_private_key(), nacl.public.PrivateKey)
 
-    self.key = _crypto.WhisperKey()
-    self.otherkey = _crypto.WhisperKey()
+    key = _crypto.WhisperKey()
+    otherkey = _crypto.WhisperKey()
 
-    self.assertIsInstance(self.key.get_private_key(), nacl.public.PrivateKey)
-    self.assertIsInstance(self.key.get_private_key(stringify=True), str)
+    self.assertIsInstance(key.get_private_key(), nacl.public.PrivateKey)
+    self.assertIsInstance(key.get_private_key(stringify=True), str)
 
-    self.assertIsInstance(self.key.get_public_key(), nacl.public.PublicKey)
-    self.assertIsInstance(self.key.get_public_key(stringify=True), str)
+    self.assertIsInstance(key.get_public_key(), nacl.public.PublicKey)
+    self.assertIsInstance(key.get_public_key(stringify=True), str)
 
   def test_encrypt_message(self):
-    self.encrypted_message = self.key.encrypt_message("Let's see how this goes.", self.otherkey.get_public_key())
-    self.assertIsInstance(self.encrypted_message, str)
+    import nacl.public
+    import nacl.encoding
+
+    # Pre-generated keys for testing
+    key = _crypto.WhisperKey("+Ras/eyqk/ASwkODnP6+fWDYSjLoPfGuouhpGV1QyJk=")
+    otherkey_public = nacl.public.PublicKey("37hyRakD53ANLSUBvvYyf/iEuff7MmTn3ys/I1YBNg8=", encoder=nacl.encoding.Base64Encoder)
+
+    # God save us all.
+    nonce = bytes([x for x in range(24)])
+
+    # Encrypt message using our pre-generated keys
+    encrypted_message = key.encrypt_message(
+      message="This is our test message, we'll see how it turns out in the end.", 
+      public_key=otherkey_public, 
+      nonce=nonce
+    )
+
+    self.assertIsInstance(encrypted_message, str)
+    self.assertEqual(encrypted_message, "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXdgcorrdBhrx1Po1NtDJNSvFRxOdrfqsESGuxNu+aM+EeaZTSGvuOFvmROaU/86YqJis1h6yL9EDnE/6lqcM71/fqXgBOI+hiMRVBeaiAtVQ=")
 
   def test_decrypt_message(self):
-    decrypted_message = self.otherkey.decrypt_message(self.encrypted_message, self.key.get_public_key())
-    self.assertEqual(decrypted_message, "Let's see how this goes.")
+    import nacl.public
+    import nacl.encoding
+
+    # Pre-generated keys for testing
+    key = _crypto.WhisperKey("zWoSH8+RYeqJt+UaJI9E9mbmcUQWDh9gjBYfWb5ziLk=")
+    otherkey_public = nacl.public.PublicKey("e6fmjnPg7xQVdddTt3JDWafhkZq2W2TsMxs7icKWbUs=", encoder=nacl.encoding.Base64Encoder)
+
+    # Decrypt our payload
+    encrypted_message = "rZ7XgI1Kt3Eb5eMz6O2YT5qY53qdcDtxr+GbH9eirCKN2Vg782gABl6yACLQiZkbX/dEqNLbM+MhqrhWFzcXgvk1JxLvnxA6yw0a/KE4OxdtZJnGu9nzgntoMhy+9Azv611UjpH6VQI="
+    decrypted_message = key.decrypt_message(
+      message=encrypted_message, 
+      public_key=otherkey_public
+    )
+
+    self.assertEqual(decrypted_message, "This is our test message, we'll see how it turns out in the end.")
