@@ -42,7 +42,7 @@ def init_db():
     db.commit()
     db.close()
     
-  except Exception as e:
+  except Exception as e: # pragma: no cover
     raise Exception("Couldn't initialize DB. ", e)
 
 def init_config():
@@ -69,9 +69,9 @@ def init_config():
     raise Exception("API Key not specified in config. Sign up at http://mailgun.com")
 
   if data.get("domain") == "yourdomain.com":
-    raise Exception("Domain not specified in config.")
+    raise Exception("Domain not specified in config.") # pragma: no cover
 
-  if data.get("salt") == "":
+  if data.get("salt") == "": # pragma: no cover
     data['salt'] = _utils.gen_id(10)
 
     with open("./config", "w") as f:

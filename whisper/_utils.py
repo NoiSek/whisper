@@ -35,7 +35,7 @@ def format_number(number):
   else:
     raise Exception("Not a valid phone number.")
 
-def send_sms(number, country, message):
+def send_sms(number, country, message): # pragma: no cover
   if country == "united states":
     api = "http://textbelt.com/text"
 
@@ -55,7 +55,7 @@ def send_sms(number, country, message):
 
   return (number, response.text)
 
-def send_email(address, sender, content, config):
+def send_email(address, sender, content, config): # pragma: no cover
   api = "https://api.mailgun.net/v2/%s/messages" % (config.get("domain"))
   auth = ("api", config.get("api_key"))
   

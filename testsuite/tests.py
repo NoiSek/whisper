@@ -1,4 +1,4 @@
-from whisper import _database, _init, _utils
+from whisper import _database, _init, _utils, _crypto
 import unittest
 import sqlite3
 import random
@@ -67,6 +67,15 @@ class DatabaseTestCase(unittest.TestCase):
     stats = _database.get_stats(self.db)
     self.assertEqual(stats, (1, 0, 0, 0, 0, 0))
 
+  def test_update_stats(self):
+    c = self.db.cursor()
+    c.execute("SELECT * FROM stats WHERE id = 1")
+    
+    stats = c.fetchone()
+
+    _database.update_stats("sent", 1, self.db)
+    _database.update_stats("opened")
+    self.assertEqual(stats, (2, 0, 0, 0, 0, 1))
 
 class InitTestCase(unittest.TestCase):  
   def test_init_db(self):
@@ -77,11 +86,9 @@ class InitTestCase(unittest.TestCase):
 
   def test_init_config(self):
     with self.assertRaises(Exception) as e:
-      try: 
-        _init.init_config()
+      _init.init_config()
 
-      except Exception:
-        self.assertEqual(e.msg, "API Key not specified in config. Sign up at http://mailgun.com")
+    self.assertTrue("API Key not specified in config. Sign up at http://mailgun.com" in e.exception)
 
     with open("./config", "r+") as f:
       self.data = json.load(f)
@@ -89,11 +96,9 @@ class InitTestCase(unittest.TestCase):
       json.dump(self.data, f, indent=2)
 
     with self.assertRaises(Exception) as e:
-      try: 
-        _init.init_config()
+      _init.init_config()
 
-      except Exception:
-        self.assertEqual(e.msg, "Domain not specified in config.")
+    self.assertTrue("Domain not specified in config." in e.exception)
 
     with open("./config", "w") as f:
       self.data['domain'] = "testunittests.com"
@@ -125,6 +130,17 @@ class UtilsTestCase(unittest.TestCase):
     formatted_number = _utils.format_number("1 (888) 555-5555")
     self.assertEqual(formatted_number, ('8885555555', 'united states'))
 
+    formatted_number = _utils.format_number("1.888.555.5555")
+    self.assertEqual(formatted_number, ('8885555555', 'united states'))
+
+    formatted_number = _utils.format_number("888 555-5555")
+    self.assertEqual(formatted_number, ('8885555555', 'united states'))
+
+    with self.assertRaises(Exception) as e:
+      formatted_number = _utils.format_number("fake number")
+
+    self.assertTrue("Not a valid phone number." in e.exception)
+
   @unittest.skip("This cannot be safely tested without spamming.")
   def test_send_sms(self):
     #response = _utils.send_sms(None, None, None)
@@ -134,3 +150,32 @@ class UtilsTestCase(unittest.TestCase):
   def test_send_email(self):
     #response = _utils.send_email(None, None, None, None)
     pass
+
+class CryptoTestCase(unittest.TestCase):
+  def test_create_key(self):
+    import nacl.public
+
+    with self.assertRaises(Exception) as e:
+      fail_key = _crypto.WhisperKey("Bad String")
+
+    self.assertTrue("Error generating key from given str or bytes object:" in e.exception)
+
+    strkey = "zWoSH8+RYeqJt+UaJI9E9mbmcUQWDh9gjBYfWb5ziLk="
+    self.assertIsInstance(WhisperKey(strkey).get_private_key(), nacl.public.PrivateKey)
+
+    self.key = _crypto.WhisperKey()
+    self.otherkey = _crypto.WhisperKey()
+
+    self.assertIsInstance(self.key.get_private_key(), nacl.public.PrivateKey)
+    self.assertIsInstance(self.key.get_private_key(stringify=True), str)
+
+    self.assertIsInstance(self.key.get_public_key(), nacl.public.PublicKey)
+    self.assertIsInstance(self.key.get_public_key(stringify=True), str)
+
+  def test_encrypt_message(self):
+    self.encrypted_message = self.key.encrypt_message("Let's see how this goes.", self.otherkey.get_public_key())
+    self.assertIsInstance(self.encrypted_message, str)
+
+  def test_decrypt_message(self):
+    decrypted_message = self.otherkey.decrypt_message(self.encrypted_message, self.key.get_public_key())
+    self.assertEqual(decrypted_message, "Let's see how this goes.")

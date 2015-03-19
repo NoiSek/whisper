@@ -77,7 +77,7 @@ class WhisperKey():
     
     # Message will be prepended with a 32 character nonce, which can be parsed out elsewhere.
     encrypted_message = box.encrypt(message, nonce, encoder=nacl.encoding.Base64Encoder)
-    return (encrypted_message.decode("utf-8"), encrypted_message)
+    return encrypted_message.decode("utf-8")
 
   def decrypt_message(self, message, public_key):
     # Verify that we can convert the public_key to an nacl.public.PublicKey instance
@@ -113,11 +113,11 @@ class WhisperKey():
 
     return decrypted.decode("utf-8")
 
-if __name__ == "__main__":
+if __name__ == "__main__": # pragma: no cover
   sender = WhisperKey()
   receiver = WhisperKey()
 
-  out_message, out_obj = sender.encrypt_message(
+  out_message = sender.encrypt_message(
     message="This is our test message, we'll see how it turns out in the end.",
     public_key=receiver
   )
@@ -144,7 +144,7 @@ if __name__ == "__main__":
   print("================================================")
   print(
     receiver.decrypt_message(
-      message=out_obj,
+      message=out_message,
       public_key=sender.get_public_key()
     )
   )
