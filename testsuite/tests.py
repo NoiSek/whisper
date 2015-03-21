@@ -76,7 +76,7 @@ class DatabaseTestCase(unittest.TestCase):
     
     stats = c.fetchone()
 
-    self.assertEqual(stats, (1, 1, 0, 0, 1))
+    self.assertEqual(stats, (1, 1, 1, 0, 1))
 
 class InitTestCase(unittest.TestCase):  
   def test_init_db(self):
