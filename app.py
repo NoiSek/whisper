@@ -164,8 +164,14 @@ def send_test(email_address):
   return html
 
 if "debug" in sys.argv:
-  # Run app locally for testing
-  app.run(host="0.0.0.0", port=8080, debug=True, reloader=True)
+  # Run app locally for testing, never use this in production. 
+
+  if "vagrant" in sys.argv:
+    # 0.0.0.0 will not play nice with your other listening addresses.
+    app.run(host="0.0.0.0", port=8080, debug=True, reloader=True)
+
+  else:
+    app.run(host="localhost", port=8080, debug=True, reloader=True)    
 
 else:
   # Run app in production

@@ -72,7 +72,10 @@ class DatabaseTestCase(unittest.TestCase):
     _database.update_stats("opened", self.db)
 
     c = self.db.cursor()
-    c.execute("SELECT * FROM stats WHERE id = 1")
+    c.execute("SELECT sent, sent_plaintext, sent_disposable, sent_twofactorauth, messages_opened "
+      "FROM stats "
+      "WHERE id = 1"
+    )
     
     stats = c.fetchone()
 
