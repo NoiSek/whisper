@@ -3,6 +3,7 @@ import unittest
 import sqlite3
 import random
 import json
+import os
 
 class DatabaseTestCase(unittest.TestCase):
   def setUp(self):
@@ -65,21 +66,26 @@ class DatabaseTestCase(unittest.TestCase):
     self.db.commit()
 
     stats = _database.get_stats(self.db)
-    self.assertEqual(stats, (0, 0, 0, 0, 0))
+    self.assertIsInstance(stats, tuple)
+    self.assertTrue(len(stats) == 5)
 
   def test_update_stats(self):
+    def fetch_stats(db):
+      c = db.cursor()
+      c.execute("SELECT sent, sent_plaintext, sent_disposable, sent_twofactorauth, messages_opened "
+        "FROM stats "
+        "WHERE id = 1"
+      )
+
+      return c.fetchone()
+    
+    old_stats = fetch_stats(self.db)
+
     _database.update_stats("sent", 1, self.db)
     _database.update_stats("opened", self.db)
 
-    c = self.db.cursor()
-    c.execute("SELECT sent, sent_plaintext, sent_disposable, sent_twofactorauth, messages_opened "
-      "FROM stats "
-      "WHERE id = 1"
-    )
-    
-    stats = c.fetchone()
-
-    self.assertEqual(stats, (1, 1, 0, 0, 1))
+    new_stats = fetch_stats(self.db)
+    self.assertEqual(list(new_stats), [sum(x) for x in zip(old_stats, [1, 1, 0, 0, 1])])
 
 class InitTestCase(unittest.TestCase):  
   def test_init_db(self):
@@ -89,6 +95,19 @@ class InitTestCase(unittest.TestCase):
     self.assertIsInstance(db, sqlite3.Connection)
 
   def test_init_config(self):
+    # Backup and delete existing config for testing, if it exists
+    if os.path.exists('./config'):
+      original_config = None
+      
+      with open('config', 'r') as f:
+        original_config = f.read()
+      
+      with open('config.bak', 'w') as f:
+        f.write(original_config)
+
+      os.remove("./config")
+
+    # Generate new config
     with self.assertRaises(Exception) as e:
       _init.init_config()
 
@@ -112,6 +131,18 @@ class InitTestCase(unittest.TestCase):
 
     config = _init.init_config()  
     self.assertIsInstance(config, dict)
+
+    # Restore original config, if it exists.
+    if os.path.exists('./config.bak'):
+      original_config = None
+      
+      with open('config.bak', 'r') as f:
+        original_config = f.read()
+
+      with open('config', 'w') as f:
+        f.write(original_config)
+
+      os.remove("./config.bak")
 
 class UtilsTestCase(unittest.TestCase):
   def test_gen_id(self):
