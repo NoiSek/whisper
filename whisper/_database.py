@@ -30,7 +30,10 @@ def delete_disposable(message_id, db):
 
 def get_stats(db):
   c = db.cursor()
-  c.execute("SELECT * FROM stats WHERE id = 1")
+  c.execute("SELECT sent, sent_plaintext, sent_disposable, sent_twofactorauth, messages_opened "
+    "FROM stats "
+    "WHERE id = 1"
+  )
   
   return c.fetchone()
 

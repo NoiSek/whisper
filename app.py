@@ -30,7 +30,7 @@ def index(db):
   if stats is None:
     return dict(sent=None, opened=None)
   else:
-    sent, opened = stats
+    sent, *extra, opened = stats
     return dict(sent=sent, opened=opened)
 
 @app.route('/faq', template="faq")
@@ -165,7 +165,7 @@ def send_test(email_address):
 
 if "debug" in sys.argv:
   # Run app locally for testing
-  app.run(host="localhost", port=8080, debug=True, reloader=True)
+  app.run(host="0.0.0.0", port=8080, debug=True, reloader=True)
 
 else:
   # Run app in production

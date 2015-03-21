@@ -4,58 +4,57 @@
   <title>NaCl Testing</title>
 </head>
 <body>
-  <div>Time to test.</div>
-  <!--<script type="text/javascript" src="https://rawgit.com/tonyg/js-nacl/master/lib/nacl_factory.js"></script>-->
+  <h4 style="text-align: center; margin: 0px auto; margin-top: 250px;">Drag private key to decrypt</h4>
+  <div id="drop-container" style="background: #eee; display: block; margin: 0px auto; height: 125px; width: 250px; margin-top: 25px; text-align: center; padding: 75px; font-family: Arial; font-weight: bold; word-wrap: break-word;">rZ7XgI1Kt3Eb5eMz6O2YT5qY53qdcDtxr+GbH9eirCKN2Vg782gABl6yACLQiZkbX/dEqNLbM+MhqrhWFzcXgvk1JxLvnxA6yw0a/KE4OxdtZJnGu9nzgntoMhy+9Azv611UjpH6VQI=</div>
   <script type="text/javascript" src="static/js/nacl-fast.min.js"></script>
   <script type="text/javascript">
-    function base64ToBinary(base64) {
-      var raw = window.atob(base64);
-      var rawLength = raw.length;
-      var array = new Uint8Array(new ArrayBuffer(rawLength));
-     
-      for(i = 0; i < rawLength; i++) {
-        array[i] = raw.charCodeAt(i);
-      }
-      return array;
-    }
-
-    function nacl_fast() {
-      /* nacl-fast.min.js */
-      var privateKey = nacl.util.decodeBase64("zWoSH8+RYeqJt+UaJI9E9mbmcUQWDh9gjBYfWb5ziLk=");
+    function decryptMessage(privateKey, publicKey, encryptedMessage) {
+      /*var privateKey = nacl.util.decodeBase64("zWoSH8+RYeqJt+UaJI9E9mbmcUQWDh9gjBYfWb5ziLk=");
       var publicKey = nacl.util.decodeBase64("e6fmjnPg7xQVdddTt3JDWafhkZq2W2TsMxs7icKWbUs=");
-      var encryptedMessage = nacl.util.decodeBase64("rZ7XgI1Kt3Eb5eMz6O2YT5qY53qdcDtxr+GbH9eirCKN2Vg782gABl6yACLQiZkbX/dEqNLbM+MhqrhWFzcXgvk1JxLvnxA6yw0a/KE4OxdtZJnGu9nzgntoMhy+9Azv611UjpH6VQI=");
+      var encryptedMessage = nacl.util.decodeBase64("rZ7XgI1Kt3Eb5eMz6O2YT5qY53qdcDtxr+GbH9eirCKN2Vg782gABl6yACLQiZkbX/dEqNLbM+MhqrhWFzcXgvk1JxLvnxA6yw0a/KE4OxdtZJnGu9nzgntoMhy+9Azv611UjpH6VQI=");*/
+      var privateKey = nacl.util.decodeBase64(privateKey);
+      var publicKey = nacl.util.decodeBase64(publicKey);
+      var encryptedMessage = nacl.util.decodeBase64(encryptedMessage);
 
       var nonce = encryptedMessage.subarray(0, 24);
       var message = encryptedMessage.subarray(24);
 
       var output = nacl.box.open(message, nonce, publicKey, privateKey);
-      console.log(nacl.util.encodeUTF8(output));
+      return nacl.util.encodeUTF8(output);
     }
+  </script>
+  <script type="text/javascript">
+    var dropContainer = document.getElementById("drop-container");
+    var whisperPublicKey = "e6fmjnPg7xQVdddTt3JDWafhkZq2W2TsMxs7icKWbUs=";
 
-    function nacl_em(nacl) {    
-      var privateKey = base64ToBinary("zWoSH8+RYeqJt+UaJI9E9mbmcUQWDh9gjBYfWb5ziLk=");
-      var publicKey = base64ToBinary("e6fmjnPg7xQVdddTt3JDWafhkZq2W2TsMxs7icKWbUs=");
-      var encryptedMessage = base64ToBinary("rZ7XgI1Kt3Eb5eMz6O2YT5qY53qdcDtxr+GbH9eirCKN2Vg782gABl6yACLQiZkbX/dEqNLbM+MhqrhWFzcXgvk1JxLvnxA6yw0a/KE4OxdtZJnGu9nzgntoMhy+9Azv611UjpH6VQI=");
-      
-      var nonce = encryptedMessage.subarray(0, 24);
-      var message = encryptedMessage.subarray(24);
+    dropContainer.addEventListener("dragover", function(e) {
+      e.preventDefault();
+    });
 
-      var output = nacl.crypto_box_open(message, nonce, publicKey, privateKey);
-      console.log(nacl.decode_utf8(output));
-    }
+    dropContainer.addEventListener("dragenter", function(e) {
+      e.preventDefault();
+    });
 
-    var start = new Date().getTime();
-    //var nacl = nacl_factory.instantiate();
+    dropContainer.addEventListener("drop", function(e) {
+      e.preventDefault();
+      var file = e.dataTransfer.files[0];
 
-    for (i = 0; i < 100; ++i) {
-      //nacl_em(nacl);
-      nacl_fast();
-      console.log(i);
-    }
+      if (file.type == "image/png") {
+        var reader = new FileReader();
+        reader.onload = function() {
+          var file_contents = reader.result;
 
-    var end = new Date().getTime();
-    var time = end - start;
-    alert('Execution time: ' + time);
+          var private_key = file_contents.slice(5884);
+          var message = decryptMessage(private_key, whisperPublicKey, dropContainer.innerHTML);
+          
+          dropContainer.innerHTML = message;
+        };
+
+        reader.readAsBinaryString(file);
+      } else {
+        console.log("Invalid file provided.");
+      }
+    });
   </script>
 </body>
 </html>

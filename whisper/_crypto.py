@@ -24,13 +24,28 @@ class WhisperKey():
   def generate_keypair(self):
     self._private_key = nacl.public.PrivateKey.generate()
 
-  def get_private_key(self, stringify=False):
+  def get_private_key(self, stringify=False, as_image=False, image=None):
     if stringify:
       return (
         self._private_key
         .encode(encoder=nacl.encoding.Base64Encoder)
         .decode("utf-8")
       )
+
+    elif as_image:
+      file_contents = None
+
+      if image:
+        file_contents = image.read()
+      
+      else:
+        with open("whisper/static/key.png", "br") as f:
+          file_contents = f.read()
+
+        private_key = self._private_key.encode(encoder=nacl.encoding.Base64Encoder)
+        file_contents += private_key
+
+      return file_contents
 
     else:
       return self._private_key
