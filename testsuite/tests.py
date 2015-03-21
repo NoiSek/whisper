@@ -65,7 +65,7 @@ class DatabaseTestCase(unittest.TestCase):
     self.db.commit()
 
     stats = _database.get_stats(self.db)
-    self.assertEqual(stats, (1, 0, 0, 0, 0, 0))
+    self.assertEqual(stats, (0, 0, 0, 0, 0))
 
   def test_update_stats(self):
     _database.update_stats("sent", 1, self.db)
@@ -76,7 +76,7 @@ class DatabaseTestCase(unittest.TestCase):
     
     stats = c.fetchone()
 
-    self.assertEqual(stats, (1, 1, 1, 0, 0, 1))
+    self.assertEqual(stats, (1, 1, 0, 0, 1))
 
 class InitTestCase(unittest.TestCase):  
   def test_init_db(self):
