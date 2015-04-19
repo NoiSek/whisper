@@ -29,9 +29,9 @@
           <h2 class="faq_header">Frequently Asked Questions</h2>
           <div class="faq_content">
             <h3>What is whisper? Why am I here?</h3>
-            <p>Whisper is an anonymous, and optionally encrypted courier service. You are here because someone sent you a disposable message link.</p>
+            <p>Whisper is an anonymous and (optionally) encrypted courier service. You are here because someone sent you a link to a whisper, a message intended for your eyes only.</p>
             <h3>What happened to my message?</h3>
-            <p>All whispers are immediately destroyed once viewed. If you are seeing this page, you or possibly someone else has already read this whisper.</p>
+            <p>All whispers are immediately destroyed once viewed by default. If you are seeing this page after following a link&mdash; you, or possibly someone else, has already read this whisper.</p>
             <h3>Why would I want to send a whisper?</h3>
             <p>That's up to you. Whisper is an anonymous service that values both the integrity and privacy of your messages. All that we ask is that you don't abuse this service for malicious purposes.</p>
             <h3>How do I know I can trust this service?</h3>

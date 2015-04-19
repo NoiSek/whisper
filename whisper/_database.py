@@ -1,10 +1,18 @@
 import sqlite3
 
-def create_disposable(unique_id, sender, content, password, db):
+def create_disposable(digest, db):
   c = db.cursor()
   c.execute("INSERT INTO messages "
-    "VALUES (?, ?, ?, ?)",
-    (unique_id, sender, content, password)
+    "VALUES (?, ?, ?, ?, ?, ?)",
+    (
+      digest.get("unique_id"),
+      digest.get("sender"),
+      digest.get("content"),
+      digest['options'].get("o", "None"),
+      digest['options'].get("x", "None"),
+      digest['options'].get("d", "None"),
+      digest['options'].get("p", "None")
+    )
   )
 
   db.commit()
@@ -30,56 +38,36 @@ def delete_disposable(message_id, db):
 
 def get_stats(db):
   c = db.cursor()
-  c.execute("SELECT sent, sent_plaintext, sent_disposable, sent_twofactorauth, messages_opened "
+  c.execute("SELECT sent "
     "FROM stats "
-    "WHERE id = 1"
+    "WHERE id = 1" 
   )
   
   return c.fetchone()
 
 def update_stats(*args):
-  event, *args, db = args
+  # Hamstringed to track sent messages only for the foreseeable future, tracking the type
+  # and number of messages both opened and sent could potentially be a security and privacy concern.
+  event, db = args
 
   c = db.cursor()
 
   c.execute("INSERT OR IGNORE INTO stats "
-    "VALUES (1, 0, 0, 0, 0 ,0)"
+    "VALUES (1, 0)"
   )
 
   c.execute("INSERT OR IGNORE INTO stats_historical "
-    "VALUES(date('now'), 0, 0, 0, 0, 0)"
+    "VALUES(date('now'), 0)"
   )
 
   if event is "sent":
-    paranoia = int(args[0])
-
-    increment = {
-      "sent": 1,
-      "plaintext": 1 if paranoia is 1 else 0,
-      "disposable": 1 if paranoia is 2 else 0,
-      "twofactorauth": 1 if paranoia is 3 else 0
-    }
-
     c.execute("UPDATE stats "
-      "SET sent = sent + ?, sent_plaintext = sent_plaintext + ?, sent_disposable = sent_disposable + ?, sent_twofactorauth = sent_twofactorauth + ? "
-      "WHERE id = 1 ",
-      (increment['sent'], increment['plaintext'], increment['disposable'], increment['twofactorauth'])
+      "SET sent = sent + 1 "
+      "WHERE id = 1 "
     )
 
     c.execute("UPDATE stats_historical "
-      "SET sent = sent + ?, sent_plaintext = sent_plaintext + ?, sent_disposable = sent_disposable + ?, sent_twofactorauth = sent_twofactorauth + ? "
-      "WHERE date = date('now')",
-      (increment['sent'], increment['plaintext'], increment['disposable'], increment['twofactorauth'])
-    )
-
-  elif event is "opened":
-    c.execute("UPDATE stats "
-      "SET messages_opened=messages_opened + 1 "
-      "WHERE id = 1"
-    )
-
-    c.execute("UPDATE stats_historical "
-      "SET messages_opened=messages_opened + 1 "
+      "SET sent = sent + 1 "
       "WHERE date = date('now')"
     )
 

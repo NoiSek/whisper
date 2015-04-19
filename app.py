@@ -2,11 +2,11 @@ from bottle import Bottle, TEMPLATE_PATH, static_file, request, template, run
 from bottle_sqlite import SQLitePlugin
 
 from whisper import _database
-from whisper import _crypto
+from whisper import _models
 from whisper import _utils
 from whisper import _init
 
-import json, sys
+import datetime, json, sys
 
 # Extend the bottle class to initialize the DB and config
 class WhisperApp(Bottle):
@@ -15,6 +15,8 @@ class WhisperApp(Bottle):
     self.app_config = _init.init_config() # Necessary due to naming conflicts in the Bottle class
     self.database = _database
     self.utils = _utils
+    self.models = _models
+    self.private_key = self.models.WhisperKey(self.app_config.get("private_key"))
 
     _init.init_db()
     super().__init__()
@@ -82,55 +84,62 @@ def verify_whisper(db):
 
 @app.post('/send')
 def send_whisper(db):
-  address = request.forms.get('address')
-  sender = request.forms.get('sender')
+  # If performance ever becomes a problem, implement a global 
+  # message queue. Extremely unlikely performance will ever be a concern, 
+  # but this function is a potential bottleneck.
+  sender = request.forms.get('sender') or "Anonymous"
   content = request.forms.get('content')
-  paranoia = request.forms.get('paranoia')
-  password = request.forms.get('password')
-  number = request.forms.get('number')
+  options = request.forms.get('options')
+
+  # Check for illegal option combinations
+  if "p" in options and "t" in options:
+    return json.JSONEncoder().encode({
+      "success": "false",
+      "response": "Password protection and Two-Factor Authentication cannot be enabled at the same time."
+    })
+
+  if len(options) > 1 and "m" not in options:
+    return json.JSONEncoder().encode({
+      "success": "false",
+      "response": "These options are not possible without 'm' (email) specified."
+    })
 
   try:
-    sender = sender or "Anonymous"
     message_id = app.utils.gen_id()
-    formatted_content = content
-    
+    message = app.models.WhisperMessage(message_id, sender, contents, options, db)
     url = "http://%s/disposable/%s" % (app.app_config.get("domain"), message_id)
 
-    if int(paranoia) is 1:
-      password = None
-      url = None
-      app.database.update_stats("opened", db)
+    # e -- Encrypt message using PyNaCl.
+    if "e" in options:
+      recipient_key = app.models.WhisperKey()
+      message.encrypt(recipient_key, app.private_key)
 
-    # Paranoia == Disposable Message
-    if int(paranoia) is 2:
-      password = None
-      formatted_content = ("Someone has sent you a whisper anonymously.\n"
-      "The contents of this message will be destroyed upon viewing: ")
+    # m -- Send whisper over email
+    if "m" in options:
+      message.format()
 
-    # Paranoia == Two factor authentication over SMS
-    elif int(paranoia) is 3:
-      password = password or app.utils.gen_password()
+      if len(options) > 1:
+        message.save()
+        html = template("email", sender=sender, content=message.formatted_content, url=url, domain=app.app_config.get("domain"))
+        
+        if "e" in options:
+          response = app.utils.send_email(address=message.options.get("m"), sender=sender, content=html, config=app.app_config, key=message.options.get("e"))
+        
+        else:
+          response = app.utils.send_email(address=message.options.get("m"), sender=sender, content=html, config=app.app_config)
 
-      number, country = app.utils.format_number(number=number)
+      else:
+        html = template("email", sender=sender, content=message.formatted_content, url=None, domain=app.app_config.get("domain"))
+        response = app.utils.send_email(address=options.get("m"), sender=sender, content=html, config=app.app_config)
 
-      sms_content = ("Someone has sent you a Whisper. "
-      "Use this code along with the URL sent to your email address to read your whisper: %s" % (password))
-      app.utils.send_sms(number=number, country=country, message=sms_content)
+    else:
+      message.save()
+      app.database.update_stats("sent", db)
 
-      formatted_content = ("Someone has sent you a password protected whisper anonymously. "
-      "To open this message, use the confirmation code sent over SMS to (%s) *** %s.\n"
-      "The contents of this message will be destroyed upon viewing: " % (number[:3], number[6:]))
-
-    # Paranoia == Two factor authentication via password protection
-    elif int(paranoia) is 4:
-      pass
-
-    if int(paranoia) > 1:
-      app.database.create_disposable(unique_id=message_id, sender=sender, content=content, password=password, db=db)
-    
-    html = template("email", sender=sender, content=formatted_content, url=url, domain=app.app_config.get("domain"))
-    response = app.utils.send_email(address=address, sender=sender, content=html, config=app.app_config)
-    app.database.update_stats("sent", paranoia, db)
+      response = json.JSONEncoder().encode({
+        "success": "true",
+        "response": url
+      })
 
     return response
 
@@ -163,9 +172,8 @@ def send_test(email_address):
 
   return html
 
+# Never use this in production.
 if "debug" in sys.argv:
-  # Run app locally for testing, never use this in production. 
-
   if "vagrant" in sys.argv:
     # 0.0.0.0 will not play nice with your other listening addresses.
     app.run(host="0.0.0.0", port=8080, debug=True, reloader=True)
@@ -174,5 +182,5 @@ if "debug" in sys.argv:
     app.run(host="localhost", port=8080, debug=True, reloader=True)    
 
 else:
-  # Run app in production
+  # Run in production
   app.run(port=8080, workers=4, server='gunicorn')

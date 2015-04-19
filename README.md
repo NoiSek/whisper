@@ -7,14 +7,13 @@ Anonymous, encrypted email.
 
 Todo:
  - Rewrite example Nginx config in https for various webservers
- - Add ability for original authors to view and optionally delete messages using cookies or sessions.
- - Add optional time expiration
  - Implement docker for painless installation
  - Expand test coverage, break unit testing into more modular pieces
  - Queueing system when encrypting messages rather than competing for available memory
+ - Emails from Whisper should carry a PGP signature to verify their authenticity
 
 ###Installing Whisper
-Whisper is a Python 3 application. In development environments, skip all of the below and use [Vagrant](http://www.vagrantup.com/downloads) and run ```vagrant up``` instead.
+Whisper is a Python 3 application. In development environments, skip all of the below and use [Vagrant](http://www.vagrantup.com/downloads) and run ```vagrant up``` from the application directory instead.
 
 To begin the installation process, install Python 3 and the Python development headers. On Ubuntu:
 

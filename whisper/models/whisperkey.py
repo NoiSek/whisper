@@ -33,13 +33,16 @@ class WhisperKey():
       )
 
     elif as_image:
+      # Accessible afterwards by parsing all characters after 2321.
+      # If the image changes, the ability to parse it changes as well.
+      # Wise to include an identifier in the future for the use of custom images.
       file_contents = None
 
       if image:
         file_contents = image.read()
       
       else:
-        with open("whisper/static/key.png", "br") as f:
+        with open("whisper/static/img/key_small.png", "br") as f:
           file_contents = f.read()
 
         private_key = self._private_key.encode(encoder=nacl.encoding.Base64Encoder)

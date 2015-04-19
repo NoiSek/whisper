@@ -60,19 +60,20 @@ class DatabaseTestCase(unittest.TestCase):
   def test_get_stats(self):
     c = self.db.cursor()
     c.execute("INSERT OR IGNORE INTO stats "
-      "VALUES (1, 0, 0, 0, 0 ,0)"
+      "VALUES (1, 0)"
     )
 
     self.db.commit()
 
     stats = _database.get_stats(self.db)
     self.assertIsInstance(stats, tuple)
-    self.assertTrue(len(stats) == 5)
+    self.assertTrue(len(stats) == 1)
 
   def test_update_stats(self):
+    # Create a point of reference
     def fetch_stats(db):
       c = db.cursor()
-      c.execute("SELECT sent, sent_plaintext, sent_disposable, sent_twofactorauth, messages_opened "
+      c.execute("SELECT sent "
         "FROM stats "
         "WHERE id = 1"
       )
@@ -80,12 +81,12 @@ class DatabaseTestCase(unittest.TestCase):
       return c.fetchone()
     
     old_stats = fetch_stats(self.db)
-
-    _database.update_stats("sent", 1, self.db)
-    _database.update_stats("opened", self.db)
-
+    
+    # Update stats and make sure the result is old stats + 1
+    _database.update_stats("sent", self.db)
     new_stats = fetch_stats(self.db)
-    self.assertEqual(list(new_stats), [sum(x) for x in zip(old_stats, [1, 1, 0, 0, 1])])
+
+    self.assertEqual(int(new_stats[0]), int(old_stats[0]) + 1)
 
 class InitTestCase(unittest.TestCase):  
   def test_init_db(self):

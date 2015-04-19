@@ -55,7 +55,7 @@ def send_sms(number, country, message): # pragma: no cover
 
   return (number, response.text)
 
-def send_email(address, sender, content, config): # pragma: no cover
+def send_email(address, sender, content, config, key=None): # pragma: no cover
   api = "https://api.mailgun.net/v2/%s/messages" % (config.get("domain"))
   auth = ("api", config.get("api_key"))
   
@@ -65,6 +65,13 @@ def send_email(address, sender, content, config): # pragma: no cover
     "subject": "Whisper from %s, anonymously." % (sender),
     "html": content
   }
+
+  if key:
+    data['attachments'] = [{
+      "content": key,
+      "name": "private_key.png",
+      "type": "image/png"
+    }]
 
   response = requests.post(url=api, auth=auth, data=data)
   json_data = json.loads(response.text)

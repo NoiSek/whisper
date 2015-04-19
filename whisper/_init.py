@@ -15,25 +15,15 @@ def init_db():
       "id INT PRIMARY KEY,"
       "sender TEXT,"
       "content TEXT,"
+      "owner TEXT,"
+      "expiration_date TEXT,"
+      "self_destruct TEXT,"
       "password TEXT)"
     )
 
     c.execute("CREATE TABLE IF NOT EXISTS stats("
       "id INT PRIMARY KEY,"
-      "sent INT,"
-      "sent_plaintext INT,"
-      "sent_disposable INT,"
-      "sent_twofactorauth INT,"
-      "messages_opened INT)"
-    )
-
-    c.execute("CREATE TABLE IF NOT EXISTS stats_historical("
-      "date DATE PRIMARY KEY,"
-      "sent INT,"
-      "sent_plaintext INT,"
-      "sent_disposable INT,"
-      "sent_twofactorauth INT,"
-      "messages_opened INT)"
+      "sent INT)"
     )
 
     db.commit()
@@ -44,7 +34,7 @@ def init_db():
 
 def init_config():
   # Worth noting because this uses dicts, there is no way to predict the order it will be written to disk.
-  # Consider using ordered tuples if more config options are necesssary in the future.
+  # Consider using ordered tuples if more config options are necessary in the future.
 
   if not os.path.exists('./config'):
     with open("./config", "w") as f:
