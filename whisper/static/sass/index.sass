@@ -6,8 +6,9 @@
   Table of Contents
   -------------------------------------
     :: 1.a General 
-    :: 1.b Whisper Form 
-    :: 1.c Responsive Queries */
+    :: 1.b Whisper Options
+    :: 1.c Whisper Form 
+    :: 1.d Responsive Queries */
 
 /*//////////////////////////////////
   :: 1.a General
@@ -81,7 +82,26 @@ select
   overflow: hidden
 
 /*//////////////////////////////////
-  :: 1.b Whisper Form
+  :: 1.b Whisper Options
+/////////////////////////////////*/
+.options_button
+  display: inline-block
+  background: rgba(200, 200, 200, 0.6)
+
+  padding: 5px
+  margin-right: 5px
+
+  +border-radius(2px)
+
+  &:hover
+    cursor: pointer
+
+  &.disabled
+    //border: 1px solid hsla(0, 0%, 40%, 0.2)
+    background: rgba(200, 200, 200, 0.2)
+
+/*//////////////////////////////////
+  :: 1.c Whisper Form
 /////////////////////////////////*/
 
 #email_content
@@ -316,7 +336,7 @@ select
   margin-bottom: 10px
 
 /*//////////////////////////////////
-  :: 1.c Responsive Queries
+  :: 1.d Responsive Queries
 /////////////////////////////////*/
 
 @media screen and (min-width: 35.5em)

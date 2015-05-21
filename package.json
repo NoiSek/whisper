@@ -1,0 +1,9 @@
+{
+  "name": "Whisper",
+  "devDependencies": {
+    "babel": "latest"
+  },
+  "scripts": {
+    "babel": "babel whisper/static/es6/*.es --out-dir whisper/static/js"
+  }
+}

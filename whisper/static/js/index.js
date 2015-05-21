@@ -1,120 +1,179 @@
-var _done = "webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend";
+'use strict';
 
-function generate_alert(alert, type) {
-  type = type || "alert";
+var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-  var id = Math.random().toString(36).substring(3, 9);
-  var message = type.charAt(0).toUpperCase() + type.slice(1) + ": " + alert;
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
 
-  $("#form_container").append("<div id='" + id + "'class=\"alert " + type + " animated fadeInUp\">" + message + "</div>");
-  $("#"+id).one(_done, function() {
-    setTimeout(function() {
-      $("#" + id).addClass("animated fadeOutDown");
-      $("#" + id).one(_done, function() {
-        $(this).remove();
-      }); 
-    }, 3000);
-  });
-}
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-$(document).ready(function() {
-  $("#whisper").submit(function(e) {
-    e.preventDefault();
+var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
-    var values = $("#whisper").serializeArray();
-    var matrix = {
-      "address": "Email address",
-      "content": "Whisper content",
-      "paranoia": "Paranoia level",
-      "number": "SMS Number"
+var OptionButton = (function (_React$Component) {
+  function OptionButton() {
+    _classCallCheck(this, OptionButton);
+
+    if (_React$Component != null) {
+      _React$Component.apply(this, arguments);
+    }
+  }
+
+  _inherits(OptionButton, _React$Component);
+
+  _createClass(OptionButton, [{
+    key: 'update',
+    value: function update() {
+      this.props.toggleState(this.props.option.code);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var option = this.props.option;
+      var cx = React.addons.classSet;
+
+      var classes = cx({
+        options_button: true,
+        disabled: !this.props.option.value
+      });
+
+      return React.createElement(
+        'div',
+        { className: classes, onClick: this.update.bind(this) },
+        option.description
+      );
+    }
+  }]);
+
+  return OptionButton;
+})(React.Component);
+
+var OptionsField = (function (_React$Component2) {
+  function OptionsField() {
+    _classCallCheck(this, OptionsField);
+
+    if (_React$Component2 != null) {
+      _React$Component2.apply(this, arguments);
+    }
+  }
+
+  _inherits(OptionsField, _React$Component2);
+
+  _createClass(OptionsField, [{
+    key: 'update',
+    value: function update(event) {
+      this.props.setOptions(event.target.value);
+    }
+  }, {
+    key: 'getCodes',
+    value: function getCodes(options) {
+      var output = '';
+      options.filter(function (item) {
+        return item.value;
+      }).forEach(function (item) {
+        return output += item.code;
+      });
+
+      return output;
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var options = this.props.options;
+
+      return React.createElement('input', { type: 'text', onChange: this.update.bind(this), value: this.getCodes(options) });
+    }
+  }]);
+
+  return OptionsField;
+})(React.Component);
+
+var WhisperOptions = (function (_React$Component3) {
+  function WhisperOptions(props) {
+    _classCallCheck(this, WhisperOptions);
+
+    _get(Object.getPrototypeOf(WhisperOptions.prototype), 'constructor', this).call(this, props);
+    this.state = {
+      options: [{
+        description: 'Encrypt',
+        code: 'e',
+        value: true
+      }, {
+        description: 'Email',
+        code: 'm',
+        value: true
+      }, {
+        description: 'Expire',
+        code: 'x',
+        value: true
+      }, {
+        description: 'Disposable',
+        code: 'd',
+        value: false
+      }, {
+        description: 'Owner',
+        code: 'o',
+        value: false
+      }, {
+        description: 'Two-Factor',
+        code: 't',
+        value: false
+      }]
     };
-    var fail = false;
+  }
 
-    $.each(values, function(i, field) {
-      if(field.name == "number") {
-        if($("#paranoia").val() != "3") {
-          return;
+  _inherits(WhisperOptions, _React$Component3);
+
+  _createClass(WhisperOptions, [{
+    key: 'toggleButtonState',
+    value: function toggleButtonState(code) {
+      var options = this.state.options;
+
+      options.forEach(function (item) {
+        if (item.code == code) {
+          item.value = !item.value;
         }
-      }
+      });
 
-      if(field.name == "sender") {
-        return;
-      }
-
-      if(field.value == "") {
-        $("#whisper").addClass('animated flash');
-    
-        $("#whisper").one(_done, function() {
-          $("#whisper").removeClass('animated flash');
-        });
-
-        generate_alert(matrix[field.name] + " is required.", "error");
-        fail = true;
-
-        return false;
-      }
-    });
-    
-    if(!fail) {
-      $.post("/send", $("#whisper").serialize(), function(data) {
-        if(data.success == "true") {
-          generate_alert("Message sent successfully.", "success");
-
-          $("#background_cover").show();
-          $("#success_modal").show().addClass("animated flipInX");
-          $("#whisper").addClass('blurred');
-        }
-
-        else {
-          generate_alert(data.response, "error");
-        }
-      }, "json")
-      .fail(function(jqXHR, textStatus) {
-        generate_alert("Message failed to send due to internal server errors. " + textStatus, "error");
+      this.setState({
+        options: options
       });
     }
-  });
+  }, {
+    key: 'updateFromField',
+    value: function updateFromField(value) {
+      console.log('Update called');
+      console.log('Value: ' + value);
 
-  $("#success_modal_clear").click(function() {
-    $("#background_cover").hide();
-    $("#success_modal").removeClass("animated flipInX").fadeOut(400);
-    $("#whisper").removeClass("blurred");
-    $("#whisper")[0].reset();
-    $("#security li.low_security").trigger("click");
-  });
+      var options = this.state.options;
 
-  $("#security li").click(function(){
-    value = $(this).attr("value");
+      options.forEach(function (item) {
+        if (value.indexOf(item.code) != -1) {
+          item.value = true;
+        } else {
+          item.value = false;
+        }
+      });
 
-    $("#paranoia").val(value);
-    $("#security li").each(function(){
-      $(this).removeClass("active");
-    });
-    $(this).addClass("active");
-
-    var matrix = {
-      "1": {
-        "name": "Plain Text",
-        "description": "Your message will be sent in plain text over email. It is recommended that if you choose this option you use <a href='http://www.bitcoinnotbombs.com/beginners-guide-to-pgp/'>PGP</a>."
-      },
-      "2": {
-        "name": "One time message",
-        "description": "Your message will be sent as a one time link, and once opened will be destroyed forever."
-      },
-      "3": {
-        "name": "Two factor authentication",
-        "description": "Your message will be sent as a one time link, and in addition will require a code sent over SMS."
-      },
-    };
-
-    $("#security_name").html(matrix[value].name);
-    $("#security_description").html(matrix[value].description);
-
-    if(value == 3) {
-      $("#sms_container").fadeIn();
+      this.setState({
+        options: options
+      });
     }
-    else {
-      $("#sms_container").fadeOut();
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this = this;
+
+      return React.createElement(
+        'div',
+        null,
+        this.state.options.map(function (option) {
+          return React.createElement(OptionButton, { option: option, toggleState: _this.toggleButtonState.bind(_this) });
+        }),
+        React.createElement(OptionsField, { setOptions: this.updateFromField.bind(this), options: this.state.options })
+      );
     }
-  });
-});
+  }]);
+
+  return WhisperOptions;
+})(React.Component);
+
+React.render(React.createElement(WhisperOptions, null), document.getElementById('react_test'));

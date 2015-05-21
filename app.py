@@ -10,7 +10,7 @@ import datetime, json, sys
 
 # Extend the bottle class to initialize the DB and config
 class WhisperApp(Bottle):
-
+ 
   def __init__(self, catchall=True, autojson=True):
     self.app_config = _init.init_config() # Necessary due to naming conflicts in the Bottle class
     self.database = _database
@@ -28,12 +28,13 @@ TEMPLATE_PATH.insert(0, 'whisper/views')
 # Todo: add cookies.
 @app.route('/', template="index")
 def index(db):
-  stats = app.database.get_stats(db)
-  if stats is None:
-    return dict(sent=None, opened=None)
+  sent = app.database.get_stats(db)
+  
+  if sent is None:
+    return dict(sent=None)
+
   else:
-    sent, *extra, opened = stats
-    return dict(sent=sent, opened=opened)
+    return dict(sent=sent[0])
 
 @app.route('/faq', template="faq")
 def faq():
@@ -158,13 +159,13 @@ def send_test(email_address):
   sender = "Gary Provost"
   address = email_address
   content = (
-    "“This sentence has five words. Here are five more words. Five-word sentences are fine. But several together become monotonous. Listen to what is happening. The writing is getting boring. The sound of it drones. It’s like a stuck record. The ear demands some variety.\n\n"
+    "&ldquo;This sentence has five words. Here are five more words. Five-word sentences are fine. But several together become monotonous. Listen to what is happening. The writing is getting boring. The sound of it drones. It's like a stuck record. The ear demands some variety.\n\n"
     "Now listen.\n"
     "I vary the sentence length, and I create music. Music. The writing sings.\n"
     "It has a pleasant rhythm, a lilt, a harmony.\n"
     "I use short sentences.\n"
     "And I use sentences of medium length.\n"
-    "And sometimes, when I am certain the reader is rested, I will engage him with a sentence of considerable length, a sentence that burns with energy and builds with all the impetus of a crescendo, the roll of the drums, the crash of the cymbals–sounds that say listen to this, it is important.” "
+    "And sometimes, when I am certain the reader is rested, I will engage him with a sentence of considerable length, a sentence that burns with energy and builds with all the impetus of a crescendo, the roll of the drums, the crash of the cymbals&emdash;sounds that say listen to this, it is important.&rdquo; "
   ).encode('ascii', 'xmlcharrefreplace')
 
   html = template("email", sender=sender, content=content, url=None, domain=app.app_config.get("domain"))

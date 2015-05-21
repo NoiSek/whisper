@@ -93,7 +93,7 @@
   :: 1.4 Utility Functions
 /////////////////////////////////*/
 
-@mixin background-gradient($start, $end)
+=background-gradient($start, $end)
   background: $start
   background: -moz-linear-gradient(top,  $start 0%, $end 100%)
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, $start), color-stop(100%, $end))
@@ -102,3 +102,9 @@
   background: -ms-linear-gradient(top,  $start 0%, $end 100%)
   background: linear-gradient(to bottom,  $start 0%, $end 100%)
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$start', endColorstr='$end', GradientType=0 )
+
+=border-radius($radius)
+  -webkit-border-radius: $radius
+  -moz-border-radius:    $radius
+  -ms-border-radius:     $radius
+  border-radius:         $radius

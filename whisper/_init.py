@@ -1,4 +1,4 @@
-from whisper import _utils, _crypto
+from whisper import _utils, _models
 
 import inspect
 import sqlite3
@@ -67,14 +67,14 @@ def init_config():
       json.dump(data, f, indent=2)
 
   if data.get("private_key") == "" or data.get("private_key") == None:
-    key = _crypto.WhisperKey()
+    key = _models.WhisperKey()
     data['private_key'] = key.get_private_key(stringify=True)
 
     with open("./config", "w") as f:
       json.dump(data, f, indent=2)
 
   if data.get("public_key") == "" or data.get("public_key") == None:
-    key = _crypto.WhisperKey(data.get("private_key"))
+    key = _models.WhisperKey(data.get("private_key"))
     data['public_key'] = key.get_public_key(stringify=True)
 
     with open("./config", "w") as f:

@@ -5,12 +5,12 @@
 
 a {
   text-decoration: none;
-  color: #cccccc; }
+  color: #ccc; }
   a:hover, a:focus {
     text-decoration: underline; }
 
 body {
-  background: #bc8b52 url("../img/background.jpg") no-repeat center center fixed;
+  background: #BC8B52 url("../img/background.jpg") no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -101,7 +101,7 @@ h3 {
 /*///////////////////////////////////
  * :: 1.a General */
 #text_logo {
-  color: white;
+  color: #fff;
   font-family: "Arial", sans-serif;
   font-size: 48pt;
   font-style: italic;
@@ -109,7 +109,7 @@ h3 {
   text-align: center;
   letter-spacing: -5px; }
   #text_logo a {
-    color: white;
+    color: #fff;
     transition: opacity 0.2s; }
     #text_logo a:hover {
       opacity: 0.8;
@@ -117,19 +117,19 @@ h3 {
 
 ::-moz-selection {
   color: #fafafa;
-  background: #ba8f57; }
+  background: #BA8F57; }
 
 ::selection {
   color: #fafafa;
-  background: #ba8f57; }
+  background: #BA8F57; }
 
 /*///////////////////////////////////
  * :: 1.b Alerts */
 .alert, .error, .success {
-  color: #222222;
+  color: #222;
   font-size: 12pt;
   background: #fafafa;
-  border: 1px solid #eeeeee;
+  border: 1px solid #eee;
   border-radius: 3px;
   padding: 8px 10px 5px 10px;
   margin: 10px 0px 10px 0px;
@@ -137,15 +137,15 @@ h3 {
   width: 100%; }
 
 .error {
-  color: #fff4f2;
+  color: #FFF4F2;
   font-variant: small-caps;
-  background: #f24927;
-  border: 1px solid #e8330c; }
+  background: #F24927;
+  border: 1px solid #E8330C; }
 
 .success {
-  color: #e4ffeb;
-  background: #31bf57;
-  border: 1px solid #21a745;
+  color: #E4FFEB;
+  background: #31BF57;
+  border: 1px solid #21A745;
   /*#217F3A */ }
 
 /*///////////////////////////////////
@@ -171,15 +171,16 @@ h3 {
  * Table of Contents
  * -------------------------------------
  *   :: 1.a General 
- *   :: 1.b Whisper Form 
- *   :: 1.c Responsive Queries */
+ *   :: 1.b Whisper Options
+ *   :: 1.c Whisper Form 
+ *   :: 1.d Responsive Queries */
 /*//////////////////////////////////
  * :: 1.a General */
 body, html {
-  color: #3f2b00;
+  color: #3F2B00;
   overflow-x: hidden; }
   body p, html p {
-    color: #dbd7d0; }
+    color: #DBD7D0; }
 
 body {
   padding-bottom: 100px; }
@@ -187,25 +188,25 @@ body {
 input {
   background: none;
   border: none;
-  color: white;
+  color: #fff;
   font-style: italic; }
   input:focus {
     outline: none; }
   input::-webkit-input-placeholder {
     font-style: italic;
-    color: #333333;
+    color: #333;
     opacity: 0.6; }
   input:-moz-placeholder {
     font-style: italic;
-    color: #333333;
+    color: #333;
     opacity: 0.6; }
   input::-moz-placeholder {
     font-style: italic;
-    color: #333333;
+    color: #333;
     opacity: 0.6; }
   input:-ms-input-placeholder {
     font-style: italic;
-    color: #333333;
+    color: #333;
     opacity: 0.6; }
 
 label {
@@ -232,7 +233,23 @@ select {
   overflow: hidden; }
 
 /*//////////////////////////////////
- * :: 1.b Whisper Form */
+ * :: 1.b Whisper Options */
+.options_button {
+  display: inline-block;
+  background: rgba(200, 200, 200, 0.6);
+  padding: 5px;
+  margin-right: 5px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  border-radius: 2px; }
+  .options_button:hover {
+    cursor: pointer; }
+  .options_button.disabled {
+    background: rgba(200, 200, 200, 0.2); }
+
+/*//////////////////////////////////
+ * :: 1.c Whisper Form */
 #email_content {
   background: rgba(255, 255, 255, 0.1);
   border: none;
@@ -291,8 +308,8 @@ select {
 #security {
   display: inline; }
   #security li {
-    color: white;
-    background: #cccccc;
+    color: #fff;
+    background: #ccc;
     box-shadow: 1px 0px 2px rgba(0, 0, 0, 0.2);
     display: inline-block;
     list-style-type: none;
@@ -305,7 +322,7 @@ select {
       -moz-box-shadow: inset 0px 1px 2px 0px rgba(50, 50, 50, 0.5);
       box-shadow: inset 0px 1px 2px 0px rgba(50, 50, 50, 0.5); }
     #security li.low_security {
-      color: #8a0b00;
+      color: #8A0B00;
       background: #ff6f4b;
       background: -moz-linear-gradient(top, #ff6f4b 0%, #dd3f2a 100%);
       background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ff6f4b), color-stop(100%, #dd3f2a));
@@ -315,10 +332,10 @@ select {
       background: linear-gradient(to bottom, #ff6f4b 0%, #dd3f2a 100%);
       filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$start', endColorstr='$end', GradientType=0 ); }
       #security li.low_security:hover, #security li.low_security.active {
-        color: black;
+        color: #000;
         background: #dd3f2a; }
     #security li.medium_security {
-      color: #5f3f0e;
+      color: #5F3F0E;
       background: #ffaf4b;
       background: -moz-linear-gradient(top, #ffaf4b 0%, #ff890a 100%);
       background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffaf4b), color-stop(100%, #ff890a));
@@ -328,10 +345,10 @@ select {
       background: linear-gradient(to bottom, #ffaf4b 0%, #ff890a 100%);
       filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$start', endColorstr='$end', GradientType=0 ); }
       #security li.medium_security:hover, #security li.medium_security.active {
-        color: black;
+        color: #000;
         background: #ff890a; }
     #security li.high_security {
-      color: #25550b;
+      color: #25550B;
       background: #54ce3d;
       background: -moz-linear-gradient(top, #54ce3d 0%, #2e9c1a 100%);
       background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #54ce3d), color-stop(100%, #2e9c1a));
@@ -341,7 +358,7 @@ select {
       background: linear-gradient(to bottom, #54ce3d 0%, #2e9c1a 100%);
       filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$start', endColorstr='$end', GradientType=0 ); }
       #security li.high_security:hover, #security li.high_security.active {
-        color: black;
+        color: #000;
         background: #2e9c1a; }
     #security li:not(:first-of-type) {
       margin-left: -4px; }
@@ -363,7 +380,7 @@ select {
       border-bottom-right-radius: 3px; }
 
 #security_description {
-  color: #dbd7d0;
+  color: #DBD7D0;
   float: right;
   margin-bottom: 20px; }
 
@@ -382,7 +399,7 @@ select {
 
 #success_modal {
   background: #fafafa;
-  color: #222222;
+  color: #222;
   text-align: center;
   display: none;
   box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.4);
@@ -391,10 +408,10 @@ select {
   z-index: 2; }
 
 #success_modal_head {
-  color: white;
+  color: #fff;
   font-size: 2em;
   font-style: italic;
-  background: #4dbf6d;
+  background: #4DBF6D;
   display: block;
   height: 5%;
   padding-top: 10px; }
@@ -408,7 +425,7 @@ select {
   #success_modal_body .text {
     margin-bottom: 20px; }
   #success_modal_body .title {
-    color: #555555;
+    color: #555;
     font-size: 1.5em;
     font-weight: bold;
     margin-bottom: 8px; }
@@ -439,7 +456,9 @@ select {
   margin-bottom: 10px; }
 
 /*//////////////////////////////////
- * :: 1.c Responsive Queries */
+ * :: 1.d Responsive Queries */
 @media screen and (min-width: 80em) {
   #whisper_header {
     font-size: 2em; } }
+
+/*# sourceMappingURL=index.css.map */

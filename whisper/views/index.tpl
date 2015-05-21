@@ -28,6 +28,7 @@
         %if sent is not None and sent > 10:
         <h2>{{sent}} whispers sent anonymously.</h2> 
         %end
+        <div id="react_test"></div>
         <div id="form_container">
           <form id="whisper" method="post">
 
@@ -100,6 +101,7 @@
         </div>
       </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.2/react-with-addons.min.js"></script>
     <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script src="/static/js/index.js"></script>
   </body>

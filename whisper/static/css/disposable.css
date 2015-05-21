@@ -5,12 +5,12 @@
 
 a {
   text-decoration: none;
-  color: #cccccc; }
+  color: #ccc; }
   a:hover, a:focus {
     text-decoration: underline; }
 
 body {
-  background: #bc8b52 url("../img/background.jpg") no-repeat center center fixed;
+  background: #BC8B52 url("../img/background.jpg") no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -101,7 +101,7 @@ h3 {
 /*///////////////////////////////////
  * :: 1.a General */
 #text_logo {
-  color: white;
+  color: #fff;
   font-family: "Arial", sans-serif;
   font-size: 48pt;
   font-style: italic;
@@ -109,7 +109,7 @@ h3 {
   text-align: center;
   letter-spacing: -5px; }
   #text_logo a {
-    color: white;
+    color: #fff;
     transition: opacity 0.2s; }
     #text_logo a:hover {
       opacity: 0.8;
@@ -117,19 +117,19 @@ h3 {
 
 ::-moz-selection {
   color: #fafafa;
-  background: #ba8f57; }
+  background: #BA8F57; }
 
 ::selection {
   color: #fafafa;
-  background: #ba8f57; }
+  background: #BA8F57; }
 
 /*///////////////////////////////////
  * :: 1.b Alerts */
 .alert, .error, .success {
-  color: #222222;
+  color: #222;
   font-size: 12pt;
   background: #fafafa;
-  border: 1px solid #eeeeee;
+  border: 1px solid #eee;
   border-radius: 3px;
   padding: 8px 10px 5px 10px;
   margin: 10px 0px 10px 0px;
@@ -137,15 +137,15 @@ h3 {
   width: 100%; }
 
 .error {
-  color: #fff4f2;
+  color: #FFF4F2;
   font-variant: small-caps;
-  background: #f24927;
-  border: 1px solid #e8330c; }
+  background: #F24927;
+  border: 1px solid #E8330C; }
 
 .success {
-  color: #e4ffeb;
-  background: #31bf57;
-  border: 1px solid #21a745;
+  color: #E4FFEB;
+  background: #31BF57;
+  border: 1px solid #21A745;
   /*#217F3A */ }
 
 /*///////////////////////////////////
@@ -168,18 +168,18 @@ h3 {
 /*///////////////////////////////////
  * :: 1.4 Utility Functions */
 body.auth_page {
-  background: #6088d7;
+  background: #6088D7;
   -webkit-transition: background 0.2s ease;
   -moz-transition: background 0.2s ease;
   transition: background 0.2s ease; }
   body.auth_page.failure {
     background: #d76060; }
   body.auth_page.success_ {
-    background: #31bf57;
+    background: #31BF57;
     border: none; }
 
 h1 {
-  color: #3f2b00; }
+  color: #3F2B00; }
 
 #auth_container {
   height: 200px;
@@ -202,7 +202,7 @@ h1 {
     margin-top: 0; }
   #auth_container .divider {
     display: inline-block;
-    color: white;
+    color: #fff;
     font-size: 32pt;
     font-weight: 500;
     text-align: center;
@@ -248,3 +248,5 @@ h1 {
 .faq_content p {
   font-size: 16pt;
   margin-left: 30px; }
+
+/*# sourceMappingURL=disposable.css.map */
